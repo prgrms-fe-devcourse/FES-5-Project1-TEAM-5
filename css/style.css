@@ -225,7 +225,7 @@ header.no-before::before{
   justify-content: center;
   gap: 50px;
   position: fixed;
-  top: 40px;
+  top: 28px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
@@ -238,7 +238,7 @@ header.no-before::before{
   }
   a {
     position: relative;
-    font-size: 22px;
+    font-size: 1.15vw;
     color: #fff;
     transition: all 0.3s;
     &::before {
@@ -298,17 +298,18 @@ header.no-before::before{
     left: 50%;
     top: 50%;
     translate: -50% -50%;
-    font-size: 150px;
+    font-size: 8vw;
     color: #fff;
+    text-shadow: -3px 3px 0 rgba(0, 0, 0, 0.1);
   }
   .sub_tit {
     margin-bottom: 10px;
-    font-size: 20px;
+    font-size: 1.0vw;
     color: #874fff;
   }
   .visual_tit {
     margin-bottom: 80px;
-    font-size: 50px;
+    font-size: 2.7vw;
     font-weight: 600;
   }
   &.main_visual01 {
@@ -350,7 +351,7 @@ header.no-before::before{
       gap: 30px;
       > li {
         width: calc(100% / 3 - 30px);
-        height: 450px;
+        height: 48.1vh;
         border-radius: 20px;
       }
     }
@@ -440,12 +441,12 @@ header.no-before::before{
     }
     .card span {
       display: inline-block;
-      font-size: 28px;
+      font-size: 1.6vw;
       font-weight: 600;
       margin-bottom: 15px;
     }
     .card p {
-      font-size: 18px;
+      font-size: 0.9vw;
       line-height: 1.4;
     }
     .card img {
@@ -485,10 +486,10 @@ header.no-before::before{
       padding: 0 100px;
       line-height: 1.4;
       h3 {
-        font-size: 23px;
+        font-size: 1.2vw;
       }
       p {
-        font-size: 18px;
+        font-size:  0.9vw;
       }
       span {
         font-weight: 600;
@@ -527,7 +528,7 @@ header.no-before::before{
     .goMap_btn {
       display: block;
       padding: 20px 30px;
-      font-size: 40px;
+      font-size: 2.2vw;
       font-family: "Russo One";
       text-align: center;
       color: #fff;
@@ -580,7 +581,7 @@ header.no-before::before{
   justify-content: center;
   background-color: #eee;
   .inner {
-    padding: 250px 100px 100px 100px;
+    padding:  26.5vh 5.4vw 5.4vh 5.4vw;
     display: flex;
     gap: 50px;
     justify-content: center;
