@@ -3,6 +3,19 @@
 }
 
 /* 햄버거 네비 */
+.fake-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+  background: white;
+  padding: 5px 10px;
+  pointer-events: none;
+  color: #874fff;
+  font-weight: bold;
+  z-index: 9999;
+  opacity: 0;
+}
 .stripes {
   position: fixed;
   width: 0;
@@ -118,7 +131,8 @@
       color: #c6aff9;
     }
     &.disabled a:hover {
-      cursor: url("../assets/images/x_cursor.svg"), not-allowed;
+      /* cursor: url("../assets/images/x_cursor.svg"), not-allowed; */
+      cursor: none;
     }
   }
 }
@@ -193,8 +207,12 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
-  .gnb_item.disabled a:hover {
-    cursor: url("../assets/images/x_cursor.svg"), not-allowed;
+  .gnb_item.disabled {
+    position: relative;
+    a:hover {
+      /* cursor: url("../assets/images/x_cursor.svg"), not-allowed; */
+      cursor: none;
+    }
   }
   a {
     position: relative;

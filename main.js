@@ -30,11 +30,49 @@ const map = initMap();
 setMapCenter(map);
 markers = addMarkers(map);
 
+const disabled = [
+  ...gnb.querySelectorAll(".disabled a"),
+  ...nav.querySelectorAll(".disabled a"),
+];
+
+disabled.forEach((button) => {
+  button.addEventListener("mousemove", (e) => {
+    const cursor = document.querySelector(".fake-cursor");
+    let firstMove = true;
+    document.addEventListener("mousemove", (e) => {
+      if (firstMove) {
+        gsap.set(cursor, {
+          x: e.clientX,
+          y: e.clientY,
+          opacity: 1,
+        });
+        firstMove = false;
+      } else {
+        // 이후부터는 부드럽게 따라다님
+        gsap.to(cursor, {
+          x: e.clientX,
+          y: e.clientY,
+          duration: 0.2,
+          ease: "power2.out",
+        });
+      }
+    });
+  });
+  button.addEventListener("mouseleave", (e) => {
+    const cursor = document.querySelector(".fake-cursor");
+    cursor.style.opacity = "0";
+    document.body.style.cursor = "auto";
+  });
+});
+
 toggle.addEventListener("click", () => {
   nav.classList.toggle("visible");
   toggle.classList.toggle("visible");
   stripes.classList.toggle("visible");
   gnb.classList.toggle("hidden");
+  const cursor = document.querySelector(".fake-cursor");
+  cursor.style.opacity = "0";
+  document.body.style.cursor = "auto";
 });
 
 document.addEventListener("click", (e) => {
@@ -43,6 +81,9 @@ document.addEventListener("click", (e) => {
     toggle.classList.remove("visible");
     stripes.classList.remove("visible");
     gnb.classList.remove("hidden");
+    const cursor = document.querySelector(".fake-cursor");
+    cursor.style.opacity = "0";
+    document.body.style.cursor = "auto";
   }
 });
 
