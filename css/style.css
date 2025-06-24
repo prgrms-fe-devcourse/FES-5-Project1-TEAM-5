@@ -203,7 +203,7 @@
 }
 
 /* 싱단 네비 */
-header::before{
+.header::before{
   content: '';
   display: block;
   position: fixed;
@@ -214,7 +214,7 @@ header::before{
   background: rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
-header.no-before::before{
+.header.no-before::before{
   display: none;
 }
 
