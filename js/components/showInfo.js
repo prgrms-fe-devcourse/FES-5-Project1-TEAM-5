@@ -1,16 +1,23 @@
-// festivalInfoModule.js
 import { getFestival } from "../utils/getFestival.js";
 
 // 축제 info 생성
-export function createFestivalInfo(targetId, parentNode, imageParentNode) {
-  if (parentNode.querySelector(".festival-info")) {
-    console.warn("이미 열린 축제 정보가 있습니다.");
-    return; // 중복 생성 방지
+export function createFestivalInfo(targetId) {
+  const parentNode = document.querySelector(".fillter-list");
+  const imageParentNode = document.querySelector(".map-block");
+  const uhaUl = document.querySelector(".uhaUl");
+  const imageWrapperNode = document.querySelector(".section02 .inner");
+
+  if (!parentNode || !imageParentNode || !uhaUl || !imageWrapperNode) {
+    console.warn("필수 DOM 요소가 누락되었습니다.");
+    return;
   }
 
-  console.log(imageParentNode);
+  if (parentNode.querySelector(".festival-info")) {
+    console.warn("이미 열린 축제 정보가 있습니다.");
+    return;
+  }
 
-  const [festival] = getFestival("id", targetId); // 축제 데이터 가져오기
+  const [festival] = getFestival("id", targetId);
   if (!festival) {
     console.warn(`ID가 ${targetId}인 축제가 없습니다.`);
     return;
@@ -23,9 +30,13 @@ export function createFestivalInfo(targetId, parentNode, imageParentNode) {
     theme,
   } = festival;
 
-  // 인포 노드 생성 및 삽입
+  // 인포 삽입
   const infoNode = createFestivalTemplate(name, city, theme, description);
   parentNode.appendChild(infoNode);
+
+  uhaUl.classList.add("display-none");
+  imageParentNode.classList.add("display-none");
+
   gsap.fromTo(
     infoNode,
     { opacity: 0, x: 40 },
@@ -37,12 +48,11 @@ export function createFestivalInfo(targetId, parentNode, imageParentNode) {
     }
   );
 
-  // 이미지 노드 생성 및 삽입 (선언 위치는 이벤트 리스너와 공유할 수 있도록 바깥에 둠)
-  const inner = document.querySelector(".section02 .inner");
+  // 이미지 삽입
   let imageNode = null;
-  if (image && imageParentNode) {
+  if (image) {
     imageNode = createImageTemplate(image);
-    inner.prepend(imageNode);
+    imageWrapperNode.prepend(imageNode);
     gsap.fromTo(
       imageNode,
       { opacity: 0 },
@@ -54,20 +64,15 @@ export function createFestivalInfo(targetId, parentNode, imageParentNode) {
     );
   }
 
-  // ✅ 뒤로가기 버튼 클릭 시 정보 + 이미지 제거
+  // 닫기 처리
   const closeBtn = infoNode.querySelector(".close-btn");
   closeBtn.addEventListener("click", () => {
     infoNode.remove();
-    if (imageNode && inner.contains(imageNode)) {
+    if (imageNode && imageWrapperNode.contains(imageNode)) {
       imageNode.remove();
     }
-
-    const uhaUlNode = document.querySelector(".uhaUl");
-    const mapNode = document.querySelector(".map-block");
-    if (uhaUlNode) {
-      uhaUlNode.classList.remove("display-none");
-      mapNode.classList.remove("display-none");
-    }
+    uhaUl.classList.remove("display-none");
+    imageParentNode.classList.remove("display-none");
   });
 }
 
