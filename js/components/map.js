@@ -1,9 +1,8 @@
 import { APIKey } from "../data/apikey.js";
 import { getFestival } from "../utils/getFestival.js";
 const { Map } = await google.maps.importLibrary("maps");
-const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
-  "marker"
-);
+const { AdvancedMarkerElement, PinElement } =
+  await google.maps.importLibrary("marker");
 
 let markers = {};
 
@@ -42,7 +41,7 @@ export function addMarkers(map, data = getFestival()) {
     });
     bounds.extend(marker.position);
     marker.addListener("click", () => {
-      console.log(festival["id"]);
+      // console.log(festival["id"]);
       // 클릭하면 열리는거 함수 추가
     });
     markers[festival["id"]] = marker;
