@@ -5,6 +5,7 @@ import {
   uhaHandleMouseLeave,
   createFestivalInfo,
   filterFestivals,
+  noResultsRender,
 } from "./js/index.js";
 import { config } from "./js/data/apikey.js";
 import {
@@ -31,20 +32,60 @@ const map = initMap();
 setMapCenter(map);
 markers = addMarkers(map);
 
+const disabled = [
+  ...gnb.querySelectorAll(".disabled a"),
+  ...nav.querySelectorAll(".disabled a"),
+];
+
+disabled.forEach((button) => {
+  button.addEventListener("mousemove", (e) => {
+    const cursor = document.querySelector(".fake-cursor");
+    let firstMove = true;
+    document.addEventListener("mousemove", (e) => {
+      if (firstMove) {
+        gsap.set(cursor, {
+          x: e.clientX,
+          y: e.clientY,
+          opacity: 1,
+        });
+        firstMove = false;
+      } else {
+        // 이후부터는 부드럽게 따라다님
+        gsap.to(cursor, {
+          x: e.clientX,
+          y: e.clientY,
+          duration: 0.2,
+          ease: "power2.out",
+        });
+      }
+    });
+  });
+  button.addEventListener("mouseleave", (e) => {
+    const cursor = document.querySelector(".fake-cursor");
+    cursor.style.opacity = "0";
+    document.body.style.cursor = "auto";
+  });
+});
+
 function handelToggle(){
   nav.classList.toggle("visible");
   toggle.classList.toggle("visible");
   stripes.classList.toggle("visible");
   gnb.classList.toggle("hidden");
+  const cursor = document.querySelector(".fake-cursor");
+  cursor.style.opacity = "0";
+  document.body.style.cursor = "auto";
 }
 toggle.addEventListener("click", handelToggle);
-
 function handelHamburger(e){
     if (e.target.closest(".nav a")) {
     nav.classList.remove("visible");
     toggle.classList.remove("visible");
     stripes.classList.remove("visible");
     gnb.classList.remove("hidden");
+    const cursor = document.querySelector(".fake-cursor");
+    cursor.style.opacity = "0";
+    document.body.style.cursor = "auto";
   }
 }
 document.addEventListener("click", handelHamburger);
@@ -52,12 +93,12 @@ document.addEventListener("click", handelHamburger);
 const controllerBtn = $(".video_controller a");
 const video = $(".main_video");
 
-function controllerBtnHandler(buttonState) { 
-  if (buttonState === "pause") { 
-    controllerBtn.setAttribute("data-play", "pause"); 
-    controllerBtn.classList.add("pause"); 
+function controllerBtnHandler(buttonState) {
+  if (buttonState === "pause") {
+    controllerBtn.setAttribute("data-play", "pause");
+    controllerBtn.classList.add("pause");
   } else if (buttonState === "play") {
-    controllerBtn.setAttribute("data-play", "play"); 
+    controllerBtn.setAttribute("data-play", "play");
     controllerBtn.classList.remove("pause");
   }
 }
@@ -66,8 +107,8 @@ function handleVideo(){
   const dataPlay = this.getAttribute("data-play"); 
 
   if (dataPlay === "pause") {
-    video.pause(); 
-    controllerBtnHandler("play"); 
+    video.pause();
+    controllerBtnHandler("play");
   } else if (dataPlay === "play") {
     video.play().catch((e) => console.error(e));
     controllerBtnHandler("pause");
@@ -108,9 +149,9 @@ function setWrapperWidth() {
   const wrapperWidth = visuals.length * window.innerWidth;
   visualWrapper.style.width = wrapperWidth + "px";
 
-  gsap.set(visualWrapper, { x: 0 }); 
+  gsap.set(visualWrapper, { x: 0 });
 
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
   gsap.to(visualWrapper, {
     x: () => -wrapperWidth + window.innerWidth,
@@ -150,6 +191,11 @@ uhaButtons.forEach((uhaButton) => {
 
 searchButton.addEventListener("click", () => {
   festivalList = filterFestivals();
+  if (festivalList.length === 0) {
+    // 필터된 축제가 없으면?
+    noResultsRender(); // 검색 결과 없을때 랜더되는 컴포넌트.
+    return; // 검색 결과가 없으므로 종료.
+  }
   uhaUl.innerHTML = "";
 
   uhaRenderList(festivalList, uhaUl);
@@ -171,14 +217,11 @@ searchButton.addEventListener("click", () => {
   markers = addMarkers(map, festivalList);
 });
 
-function test(e) {
-  console.log("test 함수 호출");
+function showFestivalInfoBySearch(e) {
   const target = e.target.closest(".uhaLi button");
+  if (!target) return;
   const targetId = target.id;
-  createFestivalInfo(targetId, infoNode, imgNode);
-
-  uhaUl.classList.add("display-none");
-  imgNode.classList.add("display-none");
+  createFestivalInfo(targetId);
 }
 
-uhaUl.addEventListener("click", test);
+uhaUl.addEventListener("click", showFestivalInfoBySearch);
