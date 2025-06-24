@@ -26,6 +26,12 @@ export function createFestivalInfo(targetId, parentNode, imageParentNode) {
   // 인포 노드 생성 및 삽입
   const infoNode = createFestivalTemplate(name, city, theme, description);
   parentNode.appendChild(infoNode);
+  const uhaUlNode = document.querySelector(".uhaUl");
+  const mapNode = document.querySelector(".map-block");
+  if (uhaUlNode) {
+    uhaUlNode.classList.add("display-none");
+    mapNode.classList.add("display-none");
+  }
   gsap.fromTo(
     infoNode,
     { opacity: 0, x: 40 },
@@ -54,7 +60,7 @@ export function createFestivalInfo(targetId, parentNode, imageParentNode) {
     );
   }
 
-  // ✅ 뒤로가기 버튼 클릭 시 정보 + 이미지 제거
+  //뒤로가기 버튼 클릭 시 정보 + 이미지 제거
   const closeBtn = infoNode.querySelector(".close-btn");
   closeBtn.addEventListener("click", () => {
     infoNode.remove();

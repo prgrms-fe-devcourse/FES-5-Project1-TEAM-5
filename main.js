@@ -169,14 +169,11 @@ searchButton.addEventListener("click", () => {
   markers = addMarkers(map, festivalList);
 });
 
-function test(e) {
+function showFestivalInfoBySearch(e) {
   console.log("test 함수 호출");
   const target = e.target.closest(".uhaLi button");
   const targetId = target.id;
   createFestivalInfo(targetId, infoNode, imgNode);
-
-  uhaUl.classList.add("display-none");
-  imgNode.classList.add("display-none");
 }
 
-uhaUl.addEventListener("click", test);
+uhaUl.addEventListener("click", showFestivalInfoBySearch);
