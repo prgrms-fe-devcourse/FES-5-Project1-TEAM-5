@@ -131,7 +131,7 @@
   cursor: pointer;
   position: fixed;
   left: 100px;
-  top: 18px;
+  top: 10px;
   z-index: 9999;
   border-radius: 100%;
   width: 60px;
@@ -180,6 +180,22 @@
     margin-top: -4px;
     transform: rotate(135deg);
   }
+}
+
+/* 싱단 네비 */
+header::before{
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+header.no-before::before{
+  display: none;
 }
 
 /* 싱단 네비 */
