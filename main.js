@@ -5,6 +5,7 @@ import {
   uhaHandleMouseLeave,
   createFestivalInfo,
   filterFestivals,
+  noResultsRender,
 } from "./js/index.js";
 import { config } from "./js/data/apikey.js";
 import {
@@ -143,6 +144,10 @@ uhaButtons.forEach((uhaButton) => {
 
 searchButton.addEventListener("click", () => {
   festivalList = filterFestivals();
+  if(festivalList.length === 0){ // 필터된 축제가 없으면?
+    noResultsRender() // 검색 결과 없을때 랜더되는 컴포넌트.
+    return; // 검색 결과가 없으므로 종료. 
+  }
   uhaUl.innerHTML = "";
 
   uhaRenderList(festivalList, uhaUl);
