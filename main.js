@@ -24,6 +24,7 @@ const nav = $(".nav");
 const gnb = $(".gnb");
 const stripes = $(".stripes");
 const links = $$(".nav a");
+ const header = $("header");
 
 let markers = {};
 const map = initMap();
@@ -66,7 +67,7 @@ disabled.forEach((button) => {
   });
 });
 
-toggle.addEventListener("click", () => {
+function handelToggle(){
   nav.classList.toggle("visible");
   toggle.classList.toggle("visible");
   stripes.classList.toggle("visible");
@@ -74,10 +75,10 @@ toggle.addEventListener("click", () => {
   const cursor = document.querySelector(".fake-cursor");
   cursor.style.opacity = "0";
   document.body.style.cursor = "auto";
-});
-
-document.addEventListener("click", (e) => {
-  if (e.target.closest(".nav a")) {
+}
+toggle.addEventListener("click", handelToggle);
+function handelHamburger(e){
+    if (e.target.closest(".nav a")) {
     nav.classList.remove("visible");
     toggle.classList.remove("visible");
     stripes.classList.remove("visible");
@@ -86,7 +87,8 @@ document.addEventListener("click", (e) => {
     cursor.style.opacity = "0";
     document.body.style.cursor = "auto";
   }
-});
+}
+document.addEventListener("click", handelHamburger);
 
 const controllerBtn = $(".video_controller a");
 const video = $(".main_video");
@@ -101,8 +103,8 @@ function controllerBtnHandler(buttonState) {
   }
 }
 
-controllerBtn.addEventListener("click", function () {
-  const dataPlay = this.getAttribute("data-play");
+function handleVideo(){
+  const dataPlay = this.getAttribute("data-play"); 
 
   if (dataPlay === "pause") {
     video.pause();
@@ -111,18 +113,22 @@ controllerBtn.addEventListener("click", function () {
     video.play().catch((e) => console.error(e));
     controllerBtnHandler("pause");
   }
-});
+}
+controllerBtn.addEventListener("click", handleVideo);
 
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY || window.pageYOffset;
+function handleScroll() {
+   const scrollY = window.scrollY || window.pageYOffset;
   if (scrollY > 800) {
     gnb.classList.add("dark");
     toggle.classList.add("dark");
+    header.classList.add("no-before")
   } else {
     gnb.classList.remove("dark");
     toggle.classList.remove("dark");
+    header.classList.remove("no-before")
   }
-});
+}
+window.addEventListener("scroll", handleScroll);
 
 const split = new SplitText(".main_visual01 h2", { type: "chars" });
 gsap.from(split.chars, {
