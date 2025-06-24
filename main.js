@@ -50,22 +50,22 @@ document.addEventListener("click", (e) => {
 const controllerBtn = $(".video_controller a");
 const video = $(".main_video");
 
-function controllerBtnHandler(buttonState) { 
-  if (buttonState === "pause") { 
-    controllerBtn.setAttribute("data-play", "pause"); 
-    controllerBtn.classList.add("pause"); 
+function controllerBtnHandler(buttonState) {
+  if (buttonState === "pause") {
+    controllerBtn.setAttribute("data-play", "pause");
+    controllerBtn.classList.add("pause");
   } else if (buttonState === "play") {
-    controllerBtn.setAttribute("data-play", "play"); 
+    controllerBtn.setAttribute("data-play", "play");
     controllerBtn.classList.remove("pause");
   }
 }
 
 controllerBtn.addEventListener("click", function () {
-  const dataPlay = this.getAttribute("data-play"); 
+  const dataPlay = this.getAttribute("data-play");
 
   if (dataPlay === "pause") {
-    video.pause(); 
-    controllerBtnHandler("play"); 
+    video.pause();
+    controllerBtnHandler("play");
   } else if (dataPlay === "play") {
     video.play().catch((e) => console.error(e));
     controllerBtnHandler("pause");
@@ -102,9 +102,9 @@ function setWrapperWidth() {
   const wrapperWidth = visuals.length * window.innerWidth;
   visualWrapper.style.width = wrapperWidth + "px";
 
-  gsap.set(visualWrapper, { x: 0 }); 
+  gsap.set(visualWrapper, { x: 0 });
 
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
   gsap.to(visualWrapper, {
     x: () => -wrapperWidth + window.innerWidth,
@@ -144,9 +144,10 @@ uhaButtons.forEach((uhaButton) => {
 
 searchButton.addEventListener("click", () => {
   festivalList = filterFestivals();
-  if(festivalList.length === 0){ // 필터된 축제가 없으면?
-    noResultsRender() // 검색 결과 없을때 랜더되는 컴포넌트.
-    return; // 검색 결과가 없으므로 종료. 
+  if (festivalList.length === 0) {
+    // 필터된 축제가 없으면?
+    noResultsRender(); // 검색 결과 없을때 랜더되는 컴포넌트.
+    return; // 검색 결과가 없으므로 종료.
   }
   uhaUl.innerHTML = "";
 
@@ -170,10 +171,10 @@ searchButton.addEventListener("click", () => {
 });
 
 function showFestivalInfoBySearch(e) {
-  console.log("test 함수 호출");
   const target = e.target.closest(".uhaLi button");
+  if (!target) return;
   const targetId = target.id;
-  createFestivalInfo(targetId, infoNode, imgNode);
+  createFestivalInfo(targetId);
 }
 
 uhaUl.addEventListener("click", showFestivalInfoBySearch);
