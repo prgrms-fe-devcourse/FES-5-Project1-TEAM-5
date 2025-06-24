@@ -90,22 +90,22 @@ document.addEventListener("click", (e) => {
 const controllerBtn = $(".video_controller a");
 const video = $(".main_video");
 
-function controllerBtnHandler(buttonState) { 
-  if (buttonState === "pause") { 
-    controllerBtn.setAttribute("data-play", "pause"); 
-    controllerBtn.classList.add("pause"); 
+function controllerBtnHandler(buttonState) {
+  if (buttonState === "pause") {
+    controllerBtn.setAttribute("data-play", "pause");
+    controllerBtn.classList.add("pause");
   } else if (buttonState === "play") {
-    controllerBtn.setAttribute("data-play", "play"); 
+    controllerBtn.setAttribute("data-play", "play");
     controllerBtn.classList.remove("pause");
   }
 }
 
 controllerBtn.addEventListener("click", function () {
-  const dataPlay = this.getAttribute("data-play"); 
+  const dataPlay = this.getAttribute("data-play");
 
   if (dataPlay === "pause") {
-    video.pause(); 
-    controllerBtnHandler("play"); 
+    video.pause();
+    controllerBtnHandler("play");
   } else if (dataPlay === "play") {
     video.play().catch((e) => console.error(e));
     controllerBtnHandler("pause");
@@ -142,9 +142,9 @@ function setWrapperWidth() {
   const wrapperWidth = visuals.length * window.innerWidth;
   visualWrapper.style.width = wrapperWidth + "px";
 
-  gsap.set(visualWrapper, { x: 0 }); 
+  gsap.set(visualWrapper, { x: 0 });
 
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
   gsap.to(visualWrapper, {
     x: () => -wrapperWidth + window.innerWidth,
