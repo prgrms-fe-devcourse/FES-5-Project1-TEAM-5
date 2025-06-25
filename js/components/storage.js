@@ -94,21 +94,24 @@ async function post(title, parent = { parent: null }) {
 }
 
 export async function getReviews(id) {
-  const param = festivalsID[id];
+  const idMap = JSON.parse(localStorage.getItem("festival-ID"));
+  const param = idMap[id];  // 동적으로 키 접근
   let response = await fetch(`${url}/${param}`, {
     headers: { "x-username": x_username },
   });
   if (response.ok) {
     const data = await response.json();
-    const review = data.document;
-    return review.map((review) => review.title);
+    console.log(data);
+    // const review = data.documents;
+    return data.content;
   } else {
     console.error("error : " + response.status);
   }
 }
 
 export async function postReviews(festivalId) {
-  let review = festivalsID[festivalId]; // DB Id
+  let postMap = JSON.parse(localStorage.getItem("festival-ID"));
+  let review = postMap[festivalId]
   let content = localStorage.getItem(`${festivalId}Review`);
   let reviewObj = { title: festivalId, content };
   try {

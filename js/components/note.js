@@ -1,6 +1,8 @@
+import { handleReview, postReviews } from "./storage.js";
+
 const imageMap = new Map(); // Base64를 저장할 Map
 
-function convertSimpleMarkdownToHtml(markdownText) {
+export function convertSimpleMarkdownToHtml(markdownText) {
   let html = markdownText;
 
   // 인용문 (>) 처리
@@ -219,6 +221,8 @@ export function openModal(festivalId) {
     markdownDisplay.innerHTML = ''; // 미리보기 영역 비우기
     markdownInput.focus(); // 입력 필드에 포커스 주기
   }
+  const node = document.querySelector('.markdown_input_area');
+  handleReview(currentFestivalId, node)
 }
 
 // 팝업창 닫기 함수
@@ -241,7 +245,7 @@ function saveSomething() {
   const markdownTextToSave = markdownInput ? markdownInput.value : '';
   console.log("저장할 축제 ID:", currentFestivalId);
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
-  // 실제 저장 로직 (서버로 전송 등)
+  postReviews(currentFestivalId) // 서버로 저장.
   closeModal();
 }
 
