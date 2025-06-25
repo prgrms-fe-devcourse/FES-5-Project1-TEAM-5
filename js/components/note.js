@@ -76,65 +76,47 @@ function convertSimpleMarkdownToHtml(markdownText) {
   return html;
 }
 
+// 모달 템플릿
+const modalTemplate = `
+<div class="modal_container">
+  <div id="note_modal" class="modal_overlay">
+    <div id="fourth" class="modal_wrapper">
+      <div id="second" class="modal_content">
+        <div id="third" class="modal_inner">
+          <h1 class="modal_title">
+            Festory Commuinty
+            <button id="x_btn" type="button"><img src="./assets/images/close_icon.svg" alt="close" /></button>
+          </h1>
+          <div class="markdown_wrap">
+            <textarea id="markdown_input" class="markdown_input_area" placeholder="여기에 마크다운 텍스트를 입력하세요..." rows="10"></textarea>
+            <div class="modal_description_display"></div>
+          </div>
+          <div class="modal_button_wrap">
+            <button id="attach_image_btn" class="attach_image_button"><span>이미지 첨부</span></button>
+            <input type="file" id="image_file_input" accept="image/*">
+            <button id="close_btn" type="button" class="close_button"><span>Close</span></button>
+            <button id="save_btn" type="button" class="save_button"><span>Save</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
 
-let modalAnimation;
+// 모달 관련 전역 변수 및 함수
+let currentModalElement = null;
+let modalAnimation; 
 
-function openModal() {
-  modalAnimation = gsap.timeline({ defaults: { ease: "power2.inOut" }})
-    .set("#note_modal", { display: "flex", visibility: "visible", opacity: 0, scaleY: 0.01, transformOrigin: "center center" })
-    .set("#note_modal #fourth", { opacity: 0, scaleY: 0, transformOrigin: "center center" })
-    .set("#note_modal #second", { opacity: 0, scaleY: 0, transformOrigin: "center center" })
-    .set("#note_modal #third", { opacity: 0, scaleY: 0, transformOrigin: "center center" })
-    .to("#note_modal", { opacity: 1, scaleY: 1, duration: 0.6, background: "rgba(0,0,0,0.16)" })
-    .to("#note_modal #fourth", { opacity: 1, scaleY: 1, duration: 0.6 }, "-=0.4")
-    .to("#note_modal #second", { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
-    .to("#note_modal #third", { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
-    .to("#note_modal #fourth", { background: "rgba(135,25,795,0.5)", border: "1px solid rgba(0,0,0,0.1)", duration: 0.8 }, "-=0.4");
-      document.body.style.overflow = 'hidden';
-
-  const markdownInput = document.getElementById('markdown_input');
-  const markdownDisplay = document.querySelector('.modal_description_display');
-  if (markdownInput && markdownDisplay) {
-    markdownInput.value = ''; // 입력 필드 비우기
-    markdownDisplay.innerHTML = ''; // 미리보기 영역 비우기
-    markdownInput.focus(); // 입력 필드에 포커스 주기
-  }
-}
-
-function closeModal() {
-  if (modalAnimation && modalAnimation.progress() !== 0) {
-    modalAnimation.timeScale(1.6).reverse().then(() => {
-      gsap.set("#note_modal", { display: "none", visibility: "hidden" });
-       document.body.style.overflow = '';
-    });
-  }
-}
-
-function saveSomething() {
-  console.log("Save clicked!");
-  const markdownTextToSave = document.getElementById('markdown_input').value;
-  console.log("저장할 마크다운 텍스트:", markdownTextToSave);
-  // 실제 저장 로직 (서버로 전송 등)
-  closeModal();
-}
-
-// DOM이 완전히 로드된 후 이벤트 연결
-document.addEventListener("DOMContentLoaded", () => {
-  const openNoteBtn = document.getElementById("open_note");
-  if (openNoteBtn) {
-    openNoteBtn.addEventListener("click", openModal);
-  } else {
-    console.warn("Element with ID 'open_note' not found. Open button might not work.");
-  }
-
-  document.getElementById("close_btn").addEventListener("click", closeModal);
-  document.getElementById("save_btn").addEventListener("click", saveSomething);
-  document.getElementById("x_btn").addEventListener("click", closeModal);
-
-  const markdownInput = document.getElementById('markdown_input');
-  const markdownDisplay = document.querySelector('.modal_description_display');
-  const attachImageBtn = document.getElementById('attach_image_btn');
-  const imageFileInput = document.getElementById('image_file_input');
+// 팝업창 내부 요소들에 이벤트 리스너를 연결하는 함수
+function initializeModalEvents(modalEl) {
+  const markdownInput = modalEl.querySelector('#markdown_input');
+  const markdownDisplay = modalEl.querySelector('.modal_description_display');
+  const attachImageBtn = modalEl.querySelector('#attach_image_btn');
+  const imageFileInput = modalEl.querySelector('#image_file_input');
+  const closeBtn = modalEl.querySelector('#close_btn');
+  const saveBtn = modalEl.querySelector('#save_btn');
+  const xBtn = modalEl.querySelector('#x_btn');
 
   if (markdownInput && markdownDisplay) {
     markdownInput.addEventListener('input', () => {
@@ -142,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       markdownDisplay.innerHTML = convertSimpleMarkdownToHtml(markdownText);
     });
   } else {
-    console.warn("Markdown input or display element not found. Check IDs and classes.");
+    console.warn("모드 모달 내에서 마크다운 입력 또는 디스플레이 요소를 찾을 수 없습니다.");
   }
 
   if (attachImageBtn && imageFileInput && markdownInput && markdownDisplay) {
@@ -150,46 +132,118 @@ document.addEventListener("DOMContentLoaded", () => {
       imageFileInput.click();
     });
 
-  imageFileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+    imageFileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        if (!file.type.startsWith('image/')) {
+          alert('이미지 파일만 선택해주세요!');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64 = e.target.result;
+          const imageId = `image_${Date.now()}`;
+          imageMap.set(imageId, base64);
 
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 선택해주세요!');
-      event.target.value = '';
-      return;
-    }
+          const markdownImage = `![${file.name}](${imageId})\n`;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target.result;
-      const imageId = `image_${Date.now()}`;
-      imageMap.set(imageId, base64);
+          const currentText = markdownInput.value;
+          const start = markdownInput.selectionStart;
+          const end = markdownInput.selectionEnd;
 
-      const markdownImage = `![${file.name}](${imageId})\n`;
+          markdownInput.value =
+            currentText.substring(0, start) +
+            markdownImage +
+            currentText.substring(end);
 
-      const currentText = markdownInput.value;
-      const start = markdownInput.selectionStart;
-      const end = markdownInput.selectionEnd;
+          markdownInput.selectionStart = markdownInput.selectionEnd = start + markdownImage.length;
+          markdownInput.dispatchEvent(new Event('input'));
 
-      markdownInput.value =
-        currentText.substring(0, start) +
-        markdownImage +
-        currentText.substring(end);
-
-      markdownInput.selectionStart = markdownInput.selectionEnd = start + markdownImage.length;
-      markdownInput.dispatchEvent(new Event('input'));
-
-      event.target.value = ''; // 파일 초기화
-    };
-
-    reader.readAsDataURL(file);
-  });
-
+          event.target.value = ''; // 파일 초기화
+        };
+        reader.readAsDataURL(file);
+      }
+    });
   } else {
     console.warn("이미지 첨부 요소를 찾을 수 없습니다.");
   }
 
+  if (closeBtn) closeBtn.addEventListener('click', closeAuthModal);
+  if (saveBtn) saveBtn.addEventListener('click', saveSomething);
+  if (xBtn) xBtn.addEventListener('click', closeAuthModal);
+}
+
+// 팝업창 열기 함수
+function openAuthModal() {
+  document.body.insertAdjacentHTML('beforeend', modalTemplate);
+  currentModalElement = document.querySelector('.modal_container');
+
+  if (!currentModalElement) {
+      console.error("새로 삽입된 모달 요소를 찾지 못했습니다.");
+      return;
+  }
+
+  initializeModalEvents(currentModalElement);
+
+  modalAnimation = gsap.timeline({ defaults: { ease: "power2.inOut" }})
+    .set(currentModalElement.querySelector('#note_modal'), { display: "flex", visibility: "visible", opacity: 0, scaleY: 0.01, transformOrigin: "center center" })
+    .set(currentModalElement.querySelector('#fourth'), { opacity: 0, scaleY: 0, transformOrigin: "center center" })
+    .set(currentModalElement.querySelector('#second'), { opacity: 0, scaleY: 0, transformOrigin: "center center" })
+    .set(currentModalElement.querySelector('#third'), { opacity: 0, scaleY: 0, transformOrigin: "center center" })
+    .to(currentModalElement.querySelector('#note_modal'), { opacity: 1, scaleY: 1, duration: 0.6, background: "rgba(0,0,0,0.16)" })
+    .to(currentModalElement.querySelector('#fourth'), { opacity: 1, scaleY: 1, duration: 0.6 }, "-=0.4")
+    .to(currentModalElement.querySelector('#second'), { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
+    .to(currentModalElement.querySelector('#third'), { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
+    .to(currentModalElement.querySelector('#fourth'), { background: "rgba(135,25,795,0.5)", border: "1px solid rgba(0,0,0,0.1)", duration: 0.8 }, "-=0.4");
+      document.body.style.overflow = 'hidden';
+
+  const markdownInput = currentModalElement.querySelector('#markdown_input');
+  const markdownDisplay = currentModalElement.querySelector('.modal_description_display');
+  if (markdownInput && markdownDisplay) {
+    markdownInput.value = ''; // 입력 필드 비우기
+    markdownDisplay.innerHTML = ''; // 미리보기 영역 비우기
+    markdownInput.focus(); // 입력 필드에 포커스 주기
+  }
+}
+
+// 팝업창 닫기 함수
+function closeAuthModal() {
+  if (modalAnimation && modalAnimation.progress() !== 0) {
+    modalAnimation.timeScale(1.6).reverse().then(() => {
+      if (currentModalElement) {
+        currentModalElement.remove();
+        currentModalElement = null;
+         document.body.style.overflow = '';
+      }
+    });
+  }
+}
+
+// 저장 함수
+function saveSomething() {
+  console.log("Save clicked!");
+  const markdownInput = currentModalElement ? currentModalElement.querySelector('#markdown_input') : null;
+  const markdownTextToSave = markdownInput ? markdownInput.value : '';
+  console.log("저장할 마크다운 텍스트:", markdownTextToSave);
+  // 실제 저장 로직 (서버로 전송 등)
+  closeAuthModal();
+}
+
+// DOM이 완전히 로드된 후 이벤트 연결
+document.addEventListener("DOMContentLoaded", () => {
+  const openNoteBtn = document.getElementById("open_note");
+  if (openNoteBtn) {
+      openNoteBtn.addEventListener("click", openAuthModal);
+  } else {
+      console.warn("이미지 첨부 요소를 찾을 수 없습니다.");
+  }
+});
+
+document.querySelector(".modal_overlay").addEventListener("click", function(e) {
+  if (e.target === this) {
+    closeModal();
+  }
 });
 
 document.querySelector(".modal_overlay").addEventListener("click", function(e) {
