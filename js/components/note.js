@@ -87,7 +87,7 @@ const modalTemplate = `
         <div id="third" class="modal_inner">
           <h1 class="modal_title">
             Festory Commuinty
-            <button id="x_btn" type="button"><img src="./assets/images/close_icon.svg" alt="close" /></button>
+            <button id="x_btn" type="button"><img src="../assets/images/close_icon.svg" alt="close" /></button>
           </h1>
           <div class="markdown_wrap">
             <textarea id="markdown_input" class="markdown_input_area" placeholder="여기에 마크다운 텍스트를 입력하세요..." rows="10"></textarea>
