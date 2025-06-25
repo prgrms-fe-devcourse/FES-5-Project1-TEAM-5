@@ -107,6 +107,7 @@ function createFestivalTemplate(id, name, city, theme, description) {
   // 버튼 이벤트 연결
   const moveButton = wrapper.querySelector(".to-community-button");
   moveButton.addEventListener("click", () => {
+    localStorage.removeItem("lastSelectedFestivalId");
     window.location.href = `./html/community.html?id=${id}`;
   });
 

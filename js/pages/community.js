@@ -3,8 +3,17 @@ import { getFestival } from "../utils/getFestival.js";
 import { openModal, convertSimpleMarkdownToHtml } from "../components/note.js";
 import { deleteReviews, getReviews } from "../components/storage.js";
 
-const urlParams = new URLSearchParams(window.location.search);
-let currentFestivalId = urlParams.get("id") || null;
+let currentFestivalId = null;
+
+// ✅ 순서: localStorage → URL → null
+const localStoredId = localStorage.getItem("lastSelectedFestivalId");
+const urlParamId = new URLSearchParams(window.location.search).get("id");
+
+if (localStoredId) {
+  currentFestivalId = localStoredId;
+} else if (urlParamId) {
+  currentFestivalId = urlParamId;
+}
 
 /* 🧠 마크다운 렌더 함수 */
 async function loadAndRenderNote(festivalId) {
@@ -22,6 +31,7 @@ async function loadAndRenderNote(festivalId) {
     }
 
     const html = convertSimpleMarkdownToHtml(markdown);
+    console.log(html);
     contentContainer.innerHTML = html;
 
     // 🎯 버튼을 매번 새로 만들어서 바인딩
@@ -76,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = li.dataset.festivalId;
     if (id) {
       currentFestivalId = id;
+
+      localStorage.setItem("lastSelectedFestivalId", id);
+
 
       ul.querySelectorAll(".festivalItem").forEach((item) =>
         item.classList.remove("selected")
