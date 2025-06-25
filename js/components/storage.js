@@ -94,21 +94,20 @@ async function post(title, parent = { parent: null }) {
 }
 
 export async function getReviews(id) {
-  const param = festivalsID[id];
+  const param = JSON.parse(localStorage.getItem("festival-ID")).id;
   let response = await fetch(`${url}/${param}`, {
     headers: { "x-username": x_username },
   });
   if (response.ok) {
     const data = await response.json();
-    const review = data.document;
-    return review.map((review) => review.title);
+    return data.content;
   } else {
     console.error("error : " + response.status);
   }
 }
 
 export async function postReviews(festivalId) {
-  let review = festivalsID[festivalId]; // DB Id
+  let review = JSON.parse(localStorage.getItem("festival-ID")).festivalId;
   let content = localStorage.getItem(`${festivalId}Review`);
   let reviewObj = { title: festivalId, content };
   try {
@@ -154,7 +153,7 @@ export async function postReviews(festivalId) {
 
 export async function deleteReviews(festivalId) {
   try {
-    let review = festivalsID[festivalId];
+    let review = JSON.parse(localStorage.getItem("festival-ID")).festivalId;
     let reviewObj = { title: festivalId, content: "" };
     const response = await fetch(`${url}/${review}`, {
       method: "PUT",
