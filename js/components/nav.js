@@ -30,10 +30,10 @@ export function renderNav() {
               <a href="${searchHref}">SEARCH</a>
             </li>
             <li class="nav_list_item">
-              <a href="${communityHref}">COMMUNITY</a>
+              <a href="${communityHref}">TRAVEL COURSE</a>
             </li>
             <li class="nav_list_item disabled">
-              <a href="#none">TRAVEL COURSE</a>
+              <a href="#none">COMMUNITY</a>
             </li>
             <li class="nav_list_item disabled">
               <a href="#none">ABOUT</a>
@@ -45,10 +45,10 @@ export function renderNav() {
             <a href="${searchHref}">SEARCH</a>
           </li>
           <li class="gnb_item">
-            <a href="${communityHref}">COMMUNITY</a>
+            <a href="${communityHref}">TRAVEL COURSE</a>
           </li>
           <li class="gnb_item disabled">
-            <a href="javascript:void(0);">TRAVEL COURSE</a>
+            <a href="javascript:void(0);">COMMUNITY</a>
           </li>
           <li class="gnb_item disabled">
             <a href="javascript:void(0);">ABOUT</a>

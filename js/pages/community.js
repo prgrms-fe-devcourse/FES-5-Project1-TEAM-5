@@ -31,7 +31,7 @@ async function loadAndRenderNote(festivalId) {
     }
 
     const html = convertSimpleMarkdownToHtml(markdown);
-    console.log(html);
+    // console.log(html);
     contentContainer.innerHTML = html;
 
     // 🎯 버튼을 매번 새로 만들어서 바인딩

@@ -163,7 +163,7 @@ window.addEventListener("load", () => {
       const el = document.querySelector(hash);
       if (el) {
         el.scrollIntoView({ behavior: "smooth" });
-        console.log("[main_search] 스크롤 이동 완료");
+        // console.log("[main_search] 스크롤 이동 완료");
       } else {
         console.warn("[main_search] 해당 요소가 없습니다");
       }
