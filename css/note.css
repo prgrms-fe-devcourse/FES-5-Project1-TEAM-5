@@ -28,7 +28,7 @@
     top: 0;
     height: 100%;
     width: 100%;
-    display: flex; /* Flexbox로 중앙 정렬 */
+    display: flex; 
     align-items: center;
     justify-content: center;
     padding: 0.75rem 0.5rem;
@@ -93,7 +93,7 @@
     position: relative;
     background-color: #eaeaea;
     color: #a3a3a3;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 1.12rem;
     padding: 10px 25px;
     border-radius: 8px;
@@ -165,10 +165,10 @@
   margin-bottom: 15px; 
   border: 1px solid #ddd;
   border-radius: 5px;
-  font-family: monospace; /* 코딩 폰트처럼 보이게 */
+  font-family: monospace;
   font-size: 14px;
   box-sizing: border-box; 
-  resize: vertical; /* 세로로만 크기 조절 가능 */
+  resize: vertical;
 }
 .modal_description_display {
   text-align: left;
@@ -182,7 +182,7 @@
 }
 .modal_description_display {
   h1 {
-    font-size: 2rem; /* H1 크기 */
+    font-size: 2rem; 
     font-weight: bold;
     color: #222;
     padding-bottom: 8px;
@@ -284,7 +284,7 @@
   background-color: #f0f0f0;
   padding: 2px 4px; 
   border-radius: 3px; 
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* 코드 폰트 */
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
   font-size: 0.9em; 
   color: #c7254e; 
 }
