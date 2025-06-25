@@ -107,7 +107,7 @@ async function post(title, parent = { parent: null }) {
 
 export async function getReviews(id) {
   const idMap = JSON.parse(localStorage.getItem("festival-ID"));
-  const param = idMap[id];  // 동적으로 키 접근
+  const param = idMap[id]; // 동적으로 키 접근
   let response = await fetch(`${url}/${param}`, {
     headers: { "x-username": x_username },
   });
@@ -121,7 +121,7 @@ export async function getReviews(id) {
 
 export async function postReviews(festivalId) {
   let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-  let review = postMap[festivalId]
+  let review = postMap[festivalId];
   let content = localStorage.getItem(`${festivalId}Review`);
   let reviewObj = { title: festivalId, content };
   try {
@@ -168,7 +168,7 @@ export async function postReviews(festivalId) {
 export async function deleteReviews(festivalId) {
   try {
     let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-    let review = postMap[festivalId]
+    let review = postMap[festivalId];
     let reviewObj = { title: festivalId, content: "" };
     const response = await fetch(`${url}/${review}`, {
       method: "PUT",

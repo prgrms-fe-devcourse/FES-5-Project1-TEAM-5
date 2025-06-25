@@ -1,8 +1,11 @@
-
 export function renderNav() {
   const navPlaceholder = document.getElementById("nav_placeholder");
-  const isMainPage = location.pathname === "/" || location.pathname.endsWith("index.html");
+  const isMainPage =
+    location.pathname === "/" || location.pathname.endsWith("index.html");
   const searchHref = isMainPage ? "#main_search" : "../#main_search";
+  const communityHref = isMainPage
+    ? "./html/community.html"
+    : "./community.html";
 
   if (navPlaceholder) {
     navPlaceholder.innerHTML = `
@@ -26,8 +29,8 @@ export function renderNav() {
             <li class="nav_list_item">
               <a href="${searchHref}">SEARCH</a>
             </li>
-            <li class="nav_list_item disabled">
-              <a href="#none">COMMUNITY</a>
+            <li class="nav_list_item">
+              <a href="${communityHref}">COMMUNITY</a>
             </li>
             <li class="nav_list_item disabled">
               <a href="#none">TRAVEL COURSE</a>
@@ -41,8 +44,8 @@ export function renderNav() {
           <li class="gnb_item">
             <a href="${searchHref}">SEARCH</a>
           </li>
-          <li class="gnb_item disabled">
-            <a href="javascript:void(0);">COMMUNITY</a>
+          <li class="gnb_item">
+            <a href="${communityHref}">COMMUNITY</a>
           </li>
           <li class="gnb_item disabled">
             <a href="javascript:void(0);">TRAVEL COURSE</a>
@@ -143,7 +146,7 @@ export function renderNav() {
         header.classList.add("no-before");
       }
     }
-    applyDarkModeIfNeeded(); 
+    applyDarkModeIfNeeded();
 
     window.addEventListener("scroll", handleScroll);
   }
