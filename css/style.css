@@ -217,8 +217,6 @@
 .header.no-before::before{
   display: none;
 }
-
-/* 싱단 네비 */
 .gnb {
   width: 100%;
   display: flex;
@@ -264,6 +262,9 @@
       color: #747474;
     }
   }
+}
+.community_nav { 
+  min-height: 80px;
 }
 
 /* 컨텐츠 영역 */
