@@ -247,11 +247,11 @@ function closeModal() {
 
 // 저장 함수
 function saveSomething() {
-  console.log("Save clicked!");
+  // console.log("Save clicked!");
   const markdownInput = currentModalElement ? currentModalElement.querySelector('#markdown_input') : null;
   const markdownTextToSave = markdownInput ? markdownInput.value : '';
-  console.log("저장할 축제 ID:", currentFestivalId);
-  console.log("저장할 마크다운 텍스트:", markdownTextToSave);
+  // console.log("저장할 축제 ID:", currentFestivalId);
+  // console.log("저장할 마크다운 텍스트:", markdownTextToSave);
   postReviews(currentFestivalId) // 서버로 저장.
   closeModal();
   window.location.reload();

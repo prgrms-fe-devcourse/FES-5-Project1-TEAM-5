@@ -100,7 +100,7 @@ function createFestivalTemplate(id, name, city, theme, description) {
     <p>${description}</p>
 
     <div class="to-community-wrap">
-      <button type="button" class="to-community-button">메모 하러가기</button>
+      <button type="button" class="to-community-button">계획 하러가기</button>
     </div>
   `;
 
