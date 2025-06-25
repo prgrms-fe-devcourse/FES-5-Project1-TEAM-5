@@ -185,8 +185,11 @@ function initializeModalEvents(modalEl) {
     }
 }
 
+let currentFestivalId = null; // 현재 작성 중인 축제 ID 저장용
 // 팝업창 열기 함수
-function openModal() {
+export function openModal(festivalId) {
+  currentFestivalId = festivalId; // 외부에서 받은 ID 저장
+
   document.body.insertAdjacentHTML('beforeend', modalTemplate);
   currentModalElement = document.querySelector('.modal_container');
 
@@ -236,6 +239,7 @@ function saveSomething() {
   console.log("Save clicked!");
   const markdownInput = currentModalElement ? currentModalElement.querySelector('#markdown_input') : null;
   const markdownTextToSave = markdownInput ? markdownInput.value : '';
+  console.log("저장할 축제 ID:", currentFestivalId);
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
   // 실제 저장 로직 (서버로 전송 등)
   closeModal();

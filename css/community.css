@@ -16,6 +16,7 @@ body {
   /* width: 5000px; */
   width: 100%;
   height: 80px;
+  min-height: 80px; /* ← 꼭 추가 */
   background-color: #222;
   color: white;
   display: flex;
@@ -148,4 +149,8 @@ main {
     width: 100%;
     min-height: 150px;
   }
+}
+
+.selected{
+  background-color: dodgerblue;
 }
