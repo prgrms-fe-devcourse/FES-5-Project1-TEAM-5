@@ -25,7 +25,7 @@ async function loadAndRenderNote(festivalId) {
     const markdown = await getReviews(festivalId);
 
     if (!markdown || markdown.trim() === "") {
-      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다. 🥲</p>`;
       actionContainer.innerHTML = ""; // 액션 버튼 제거
       return;
     }
@@ -36,8 +36,8 @@ async function loadAndRenderNote(festivalId) {
 
     // 🎯 버튼을 매번 새로 만들어서 바인딩
     actionContainer.innerHTML = `
-      <button class="editNoteBtn">✏️ 수정</button>
-      <button class="deleteNoteBtn">🗑️ 삭제</button>
+      <button class="editNoteBtn">수정</button>
+      <button class="deleteNoteBtn">삭제</button>
     `;
 
     const editBtn = actionContainer.querySelector(".editNoteBtn");
@@ -51,7 +51,7 @@ async function loadAndRenderNote(festivalId) {
       if (!confirmed) return;
 
       await deleteReviews(festivalId);
-      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.🥲</p>`;
       actionContainer.innerHTML = "";
     });
 
@@ -68,6 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const festivals = getFestival();
 
   renderFestivalList(ul, festivals);
+
+  
 
   if (currentFestivalId) {
     // ✅ URL이나 localStorage에서 온 경우
