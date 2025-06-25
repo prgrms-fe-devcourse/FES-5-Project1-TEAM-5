@@ -2,7 +2,8 @@ import { renderFestivalList } from "../components/createList.js";
 import { getFestival } from "../utils/getFestival.js";
 import { openModal  } from "../components/note.js";
 
-let currentFestivalId = null;
+const urlParams = new URLSearchParams(window.location.search);
+let currentFestivalId = urlParams.get("id") || null;
 
 
 

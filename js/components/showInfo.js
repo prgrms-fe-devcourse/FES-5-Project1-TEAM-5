@@ -24,6 +24,7 @@ export function createFestivalInfo(targetId) {
   }
 
   const {
+    id,
     name,
     info: { image, description },
     city,
@@ -31,7 +32,7 @@ export function createFestivalInfo(targetId) {
   } = festival;
 
   // 인포 삽입
-  const infoNode = createFestivalTemplate(name, city, theme, description);
+  const infoNode = createFestivalTemplate(id, name, city, theme, description);
   parentNode.appendChild(infoNode);
 
   uhaUl.classList.add("display-none");
@@ -77,7 +78,7 @@ export function createFestivalInfo(targetId) {
 }
 
 // 인포 템플릿 생성
-function createFestivalTemplate(name, city, theme, description) {
+function createFestivalTemplate(id, name, city, theme, description) {
   const wrapper = document.createElement("div");
   wrapper.className = "festival-info is-active";
 
@@ -97,7 +98,17 @@ function createFestivalTemplate(name, city, theme, description) {
       </ul>
     </div>
     <p>${description}</p>
+
+    <div class="to-community-wrap">
+      <button type="button" class="to-community-button">커뮤니티로 이동 →</button>
+    </div>
   `;
+
+  // 버튼 이벤트 연결
+  const moveButton = wrapper.querySelector(".to-community-button");
+  moveButton.addEventListener("click", () => {
+    window.location.href = `./html/community.html?id=${id}`;
+  });
 
   return wrapper;
 }
