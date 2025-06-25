@@ -1,0 +1,151 @@
+/* === 초기화 === */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === 헤더 === */
+.community-header {
+  /* width: 5000px; */
+  width: 100%;
+  height: 80px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-bottom: 2px solid black;
+}
+
+/* === 메인 레이아웃 === */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 80%;
+  margin: 0 auto;
+  height: calc(100vh - 80px); /* 전체 높이에서 헤더 제외 */
+  border: 2px dashed gray;
+}
+
+/* === 공통 섹션 === */
+.festivalList,
+.noteSection
+/* , .detailInfo */ {
+  min-height: 200px;
+  flex: 1;
+  border: 1px solid black;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+/* === 리스트 영역 === */
+.festivalList {
+  flex: 1;
+  background-color: #f0f8ff;
+  overflow-y: auto;
+  max-height: 100%;
+
+  .festivalItem {
+    padding: 1rem;
+    border: 1px solid black;
+    font-size: 1.2rem;
+    font-weight: bold;
+
+    &:hover {
+      background-color: pink;
+      color: #222;
+      transform: translateY(-2px);
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+/* === 게시판 영역 === */
+.noteSection {
+  flex: 3;
+  background-color: #fffacd;
+  padding-top: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .createNoteBtn {
+    background-color: dodgerblue;
+    width: 80%;
+    height: 50px;
+    border-radius: 1000px;
+    margin-bottom: 2rem;
+  }
+
+  .feedWrap {
+    width: 90%;
+    height: 100%;
+    border: 2px dashed hotpink;
+    overflow-y: auto;
+    max-height: 100%;
+  }
+}
+
+/* 게시물 템플릿 */
+.noteCard {
+  border: 5px solid orange;
+  border-radius: 1.2rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: white;
+
+  .noteTitle {
+    font-size: 2rem;
+  }
+
+  .noteFooter {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+  }
+}
+
+/* .detailInfo {
+  flex: 1;
+  background-color: #e6e6fa;
+} */
+
+/* === 디버깅용 라벨 === */
+.festivalList::before,
+.noteSection::before
+/* , .detailInfo::before */ {
+  content: attr(class);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* === 반응형 === */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .festivalList,
+  .noteSection
+  /* , .detailInfo */ {
+    width: 100%;
+    min-height: 150px;
+  }
+}
