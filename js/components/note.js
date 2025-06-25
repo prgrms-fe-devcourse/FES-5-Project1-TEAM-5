@@ -236,6 +236,7 @@ function closeModal() {
       if (currentModalElement) {
         currentModalElement.remove();
         currentModalElement = null;
+        currentFestivalId = null; // ✅ 추가
          document.body.style.overflow = '';
       }
     });
@@ -251,6 +252,7 @@ function saveSomething() {
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
   postReviews(currentFestivalId) // 서버로 저장.
   closeModal();
+  window.location.reload();
 }
 
 // DOM이 완전히 로드된 후 이벤트 연결
