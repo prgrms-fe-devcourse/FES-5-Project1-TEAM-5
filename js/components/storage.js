@@ -101,8 +101,6 @@ export async function getReviews(id) {
   });
   if (response.ok) {
     const data = await response.json();
-    console.log(data);
-    // const review = data.documents;
     return data.content;
   } else {
     console.error("error : " + response.status);
@@ -157,7 +155,8 @@ export async function postReviews(festivalId) {
 
 export async function deleteReviews(festivalId) {
   try {
-    let review = festivalsID[festivalId];
+    let postMap = JSON.parse(localStorage.getItem("festival-ID"));
+    let review = postMap[festivalId]
     let reviewObj = { title: festivalId, content: "" };
     const response = await fetch(`${url}/${review}`, {
       method: "PUT",

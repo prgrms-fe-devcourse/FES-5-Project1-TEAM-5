@@ -1,7 +1,7 @@
 import { renderFestivalList } from "../components/createList.js";
 import { getFestival } from "../utils/getFestival.js";
 import { openModal, convertSimpleMarkdownToHtml } from "../components/note.js";
-import { getReviews } from "../components/storage.js"; // ✅ 수진님 만든 fetch 함수
+import { deleteReviews, getReviews } from "../components/storage.js"; // ✅ 수진님 만든 fetch 함수
 
 const urlParams = new URLSearchParams(window.location.search);
 let currentFestivalId = urlParams.get("id") || null;
@@ -14,7 +14,7 @@ async function loadAndRenderNote(festivalId) {
 
   try {
     const markdown = await getReviews(festivalId);
-    console.log("여기지? 다알아!", markdown);
+    // console.log("여기지? 다알아!", markdown);
 
     if (!markdown || markdown.trim() === "") {
       container.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
@@ -22,6 +22,27 @@ async function loadAndRenderNote(festivalId) {
     }
     const html = convertSimpleMarkdownToHtml(markdown);
     container.innerHTML = html;
+
+    // ✅ 여기서 버튼 바인딩을 한다 — markdown이 있고 렌더링에 성공했을 때만!
+    const editBtn = document.querySelector(".editNoteBtn");
+    if (editBtn) {
+      editBtn.addEventListener("click", () => {
+        console.log("✏️ 수정 버튼 클릭됨");
+        openModal(festivalId, markdown); // 기존 마크다운 전달
+      });
+    }
+
+    const deleteBtn = document.querySelector(".deleteNoteBtn");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", async () => {
+        const confirmed = confirm("정말로 이 메모를 삭제하시겠습니까?");
+        if (!confirmed) return;
+
+        await deleteReviews(festivalId);
+        container.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      });
+    }
+
   } catch (err) {
     console.error("메모 렌더링 실패:", err);
     container.innerHTML = `<p class="empty-note">메모를 불러오는 데 실패했습니다.</p>`;
@@ -33,6 +54,7 @@ async function loadAndRenderNote(festivalId) {
 document.addEventListener("DOMContentLoaded", () => {
   const ul = document.querySelector(".festivalList .list");
   const festivals = getFestival();
+  const container = document.querySelector(".noteContent");
 
   renderFestivalList(ul, festivals);
 
