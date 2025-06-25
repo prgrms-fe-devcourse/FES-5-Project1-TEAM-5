@@ -4,7 +4,10 @@ const { localStorage } = window;
 
 export function handleReview(festivalId, textField) {
   // ✅ 기존 input 이벤트 제거 (가능한 경우)
-  textField.removeEventListener("__input_handler__", textField.__debounced_handler__);
+  textField.removeEventListener(
+    "__input_handler__",
+    textField.__debounced_handler__
+  );
 
   // ✅ 새 debounce 핸들러 정의
   const handler = debounce(function (e) {
@@ -179,6 +182,7 @@ export async function deleteReviews(festivalId) {
       body: JSON.stringify(reviewObj),
     });
     if (!response.ok) throw new Error(`Delete failed ${response.status}`);
+    else localStorage.removeItem(`${festivalId}Review`);
   } catch (error) {
     console.error("Delete error : ", error);
   }
