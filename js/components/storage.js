@@ -3,7 +3,19 @@ import { getFestival } from "../utils/getFestival.js";
 const { localStorage } = window;
 
 export function handleReview(festivalId, textField) {
-  textField.addEventListener("input", debounce(handleInput(festivalId), 300));
+  // ✅ 기존 input 이벤트 제거 (가능한 경우)
+  textField.removeEventListener("__input_handler__", textField.__debounced_handler__);
+
+  // ✅ 새 debounce 핸들러 정의
+  const handler = debounce(function (e) {
+    const value = this.value;
+    localStorage.setItem(`${festivalId}Review`, value);
+  }, 300);
+
+  textField.__debounced_handler__ = handler;
+
+  // ✅ input 핸들러 등록 (참조 이름으로 추적 가능)
+  textField.addEventListener("input", handler);
 }
 
 // input이  변경될때마다 로컬스토리지에 축제idreview에  저장
