@@ -16,6 +16,7 @@ import {
   isFocusMarker,
   setMapCenter,
 } from "./js/components/map.js";
+import { initFestivalData, setUUID } from "./js/components/storage.js";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
@@ -24,13 +25,16 @@ const nav = $(".nav");
 const gnb = $(".gnb");
 const stripes = $(".stripes");
 const links = $$(".nav a");
- const header = $("header");
+const header = $("header");
 
 let markers = {};
 const map = initMap();
 
 setMapCenter(map);
 markers = addMarkers(map);
+
+initFestivalData();
+setUUID();
 
 const disabled = [
   ...gnb.querySelectorAll(".disabled a"),
@@ -67,7 +71,7 @@ disabled.forEach((button) => {
   });
 });
 
-function handelToggle(){
+function handelToggle() {
   nav.classList.toggle("visible");
   toggle.classList.toggle("visible");
   stripes.classList.toggle("visible");
@@ -77,8 +81,8 @@ function handelToggle(){
   document.body.style.cursor = "auto";
 }
 toggle.addEventListener("click", handelToggle);
-function handelHamburger(e){
-    if (e.target.closest(".nav a")) {
+function handelHamburger(e) {
+  if (e.target.closest(".nav a")) {
     nav.classList.remove("visible");
     toggle.classList.remove("visible");
     stripes.classList.remove("visible");
@@ -103,8 +107,8 @@ function controllerBtnHandler(buttonState) {
   }
 }
 
-function handleVideo(){
-  const dataPlay = this.getAttribute("data-play"); 
+function handleVideo() {
+  const dataPlay = this.getAttribute("data-play");
 
   if (dataPlay === "pause") {
     video.pause();
@@ -117,15 +121,15 @@ function handleVideo(){
 controllerBtn.addEventListener("click", handleVideo);
 
 function handleScroll() {
-   const scrollY = window.scrollY || window.pageYOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
   if (scrollY > 800) {
     gnb.classList.add("dark");
     toggle.classList.add("dark");
-    header.classList.add("no-before")
+    header.classList.add("no-before");
   } else {
     gnb.classList.remove("dark");
     toggle.classList.remove("dark");
-    header.classList.remove("no-before")
+    header.classList.remove("no-before");
   }
 }
 window.addEventListener("scroll", handleScroll);
