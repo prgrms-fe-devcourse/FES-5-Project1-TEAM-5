@@ -19,6 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderFestivalList(ul, festivals);
 
+  // ✅ 쿼리에서 받아온 축제 ID가 있다면 미리 선택 표시
+  if (currentFestivalId) {
+    const matchedItem = ul.querySelector(`[data-festival-id="${currentFestivalId}"]`);
+    if (matchedItem) {
+      matchedItem.classList.add("selected");
+      matchedItem.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+    }
+  }
+
   // 리스트 클릭 시, 축제 ID 전역 변수에 저장
   ul.addEventListener("click", (e) => {
     const li = e.target.closest(".festivalItem");
