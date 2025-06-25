@@ -70,10 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFestivalList(ul, festivals);
 
   if (currentFestivalId) {
+    // ✅ URL이나 localStorage에서 온 경우
     const matchedItem = ul.querySelector(`[data-festival-id="${currentFestivalId}"]`);
     if (matchedItem) {
       matchedItem.classList.add("selected");
       matchedItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      loadAndRenderNote(currentFestivalId);
+    }
+  } else {
+    // ✅ URL도 localStorage도 없을 때: 첫 번째 축제를 선택
+    const firstItem = ul.querySelector(".festivalItem");
+    if (firstItem) {
+      currentFestivalId = firstItem.dataset.festivalId;
+      firstItem.classList.add("selected");
       loadAndRenderNote(currentFestivalId);
     }
   }
