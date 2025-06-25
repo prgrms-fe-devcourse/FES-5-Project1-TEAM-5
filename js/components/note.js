@@ -117,6 +117,7 @@ function initializeModalEvents(modalEl) {
   const closeBtn = modalEl.querySelector('#close_btn');
   const saveBtn = modalEl.querySelector('#save_btn');
   const xBtn = modalEl.querySelector('#x_btn');
+  const modalOverlay = modalEl.querySelector('.modal_overlay');
 
   if (markdownInput && markdownDisplay) {
     markdownInput.addEventListener('input', () => {
@@ -169,13 +170,23 @@ function initializeModalEvents(modalEl) {
     console.warn("이미지 첨부 요소를 찾을 수 없습니다.");
   }
 
-  if (closeBtn) closeBtn.addEventListener('click', closeAuthModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
   if (saveBtn) saveBtn.addEventListener('click', saveSomething);
-  if (xBtn) xBtn.addEventListener('click', closeAuthModal);
+  if (xBtn) xBtn.addEventListener('click', closeModal);
+
+   if (modalOverlay) {
+      modalOverlay.addEventListener("click", function(e) {
+        if (e.target === this) {
+          closeModal(); 
+        }
+      });
+    } else {
+        console.warn("Modal overlay element not found within modal.");
+    }
 }
 
 // 팝업창 열기 함수
-function openAuthModal() {
+function openModal() {
   document.body.insertAdjacentHTML('beforeend', modalTemplate);
   currentModalElement = document.querySelector('.modal_container');
 
@@ -208,7 +219,7 @@ function openAuthModal() {
 }
 
 // 팝업창 닫기 함수
-function closeAuthModal() {
+function closeModal() {
   if (modalAnimation && modalAnimation.progress() !== 0) {
     modalAnimation.timeScale(1.6).reverse().then(() => {
       if (currentModalElement) {
@@ -227,27 +238,15 @@ function saveSomething() {
   const markdownTextToSave = markdownInput ? markdownInput.value : '';
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
   // 실제 저장 로직 (서버로 전송 등)
-  closeAuthModal();
+  closeModal();
 }
 
 // DOM이 완전히 로드된 후 이벤트 연결
 document.addEventListener("DOMContentLoaded", () => {
   const openNoteBtn = document.getElementById("open_note");
   if (openNoteBtn) {
-      openNoteBtn.addEventListener("click", openAuthModal);
+      openNoteBtn.addEventListener("click", openModal);
   } else {
       console.warn("이미지 첨부 요소를 찾을 수 없습니다.");
-  }
-});
-
-document.querySelector(".modal_overlay").addEventListener("click", function(e) {
-  if (e.target === this) {
-    closeModal();
-  }
-});
-
-document.querySelector(".modal_overlay").addEventListener("click", function(e) {
-  if (e.target === this) {
-    closeModal();
   }
 });
