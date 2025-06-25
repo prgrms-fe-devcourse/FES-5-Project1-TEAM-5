@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko-KR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Festory - Community</title>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/community.css" />
+    <link rel="stylesheet" href="../css/note.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="./js/utils/splitText.js"></script>
+    <script type="module" src="../js/pages/community.js"></script>
+  </head>
+  <body>
+    <header class="community-header"></header>
+
+    <main>
+      <aside class="festivalList">
+        <ul class="list">
+          <!-- <li>프랑스 김치축제</li> -->
+          <!-- <li>보령 머드</li> -->
+          <!-- <li>독일 맥주축제</li> -->
+        </ul>
+      </aside>
+
+      <section class="noteSection">
+        <button class="createNoteBtn">노트 생성 버튼</button>
+        <div class="feedWrap">
+          <ul>
+            <li>
+              <article class="noteCard">
+                <header class="noteHeader">
+                  <h2 class="noteTitle">🎉 독일 맥주축제 다녀왔어요!</h2>
+                  <span class="noteAuthor">익명사용자 · 2025.06.25</span>
+                </header>
+                <p class="noteContent">
+                  뮌헨 옥토버페스트 다녀왔는데 진짜 사람 많고 분위기 최고였어요!
+                  맥주 종류도 다양하고 퍼레이드도 인상 깊었어요 🍺
+                </p>
+                <footer class="noteFooter">
+                  <button class="likeBtn">❤️ 좋아요</button>
+                  <button class="deleteBtn">삭제</button>
+                </footer>
+              </article>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- <section class="detailInfo"></section> -->
+    </main>
+  </body>
+</html>
