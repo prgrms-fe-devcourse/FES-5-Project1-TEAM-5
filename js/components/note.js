@@ -1,4 +1,6 @@
 import { handleReview, postReviews } from "./storage.js";
+import { renderNav } from "./nav.js";
+renderNav();
 
 const imageMap = new Map(); // Base64를 저장할 Map
 
