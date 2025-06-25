@@ -1,77 +1,84 @@
 import { renderFestivalList } from "../components/createList.js";
 import { getFestival } from "../utils/getFestival.js";
 import { openModal, convertSimpleMarkdownToHtml } from "../components/note.js";
-import { deleteReviews, getReviews } from "../components/storage.js"; // ✅ 수진님 만든 fetch 함수
+import { deleteReviews, getReviews } from "../components/storage.js";
 
-const urlParams = new URLSearchParams(window.location.search);
-let currentFestivalId = urlParams.get("id") || null;
+let currentFestivalId = null;
 
+// ✅ 순서: localStorage → URL → null
+const localStoredId = localStorage.getItem("lastSelectedFestivalId");
+const urlParamId = new URLSearchParams(window.location.search).get("id");
+
+if (localStoredId) {
+  currentFestivalId = localStoredId;
+} else if (urlParamId) {
+  currentFestivalId = urlParamId;
+}
 
 /* 🧠 마크다운 렌더 함수 */
 async function loadAndRenderNote(festivalId) {
-  const container = document.querySelector(".noteContent");
-  if (!container) return;
+  const contentContainer = document.querySelector(".noteContent");
+  const actionContainer = document.querySelector(".noteActions");
+  if (!contentContainer || !actionContainer) return;
 
   try {
     const markdown = await getReviews(festivalId);
-    // console.log("여기지? 다알아!", markdown);
 
     if (!markdown || markdown.trim() === "") {
-      container.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      actionContainer.innerHTML = ""; // 액션 버튼 제거
       return;
     }
+
     const html = convertSimpleMarkdownToHtml(markdown);
-    container.innerHTML = html;
+    console.log(html);
+    contentContainer.innerHTML = html;
 
-    // ✅ 여기서 버튼 바인딩을 한다 — markdown이 있고 렌더링에 성공했을 때만!
-    const editBtn = document.querySelector(".editNoteBtn");
-    if (editBtn) {
-      editBtn.addEventListener("click", () => {
-        console.log("✏️ 수정 버튼 클릭됨");
-        openModal(festivalId, markdown); // 기존 마크다운 전달
-      });
-    }
+    // 🎯 버튼을 매번 새로 만들어서 바인딩
+    actionContainer.innerHTML = `
+      <button class="editNoteBtn">✏️ 수정</button>
+      <button class="deleteNoteBtn">🗑️ 삭제</button>
+    `;
 
-    const deleteBtn = document.querySelector(".deleteNoteBtn");
-    if (deleteBtn) {
-      deleteBtn.addEventListener("click", async () => {
-        const confirmed = confirm("정말로 이 메모를 삭제하시겠습니까?");
-        if (!confirmed) return;
+    const editBtn = actionContainer.querySelector(".editNoteBtn");
+    editBtn.addEventListener("click", () => {
+      openModal(festivalId, markdown); // 항상 최신값 사용
+    });
 
-        await deleteReviews(festivalId);
-        container.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
-      });
-    }
+    const deleteBtn = actionContainer.querySelector(".deleteNoteBtn");
+    deleteBtn.addEventListener("click", async () => {
+      const confirmed = confirm("정말로 이 메모를 삭제하시겠습니까?");
+      if (!confirmed) return;
+
+      await deleteReviews(festivalId);
+      contentContainer.innerHTML = `<p class="empty-note">작성된 메모가 없습니다.</p>`;
+      actionContainer.innerHTML = "";
+    });
 
   } catch (err) {
     console.error("메모 렌더링 실패:", err);
-    container.innerHTML = `<p class="empty-note">메모를 불러오는 데 실패했습니다.</p>`;
+    contentContainer.innerHTML = `<p class="empty-note">메모를 불러오는 데 실패했습니다.</p>`;
+    actionContainer.innerHTML = "";
   }
 }
 
-/* ------------------------------------ - ----------------------------------- */
-// 축제 리스트 렌더 이벤트
+/* 📌 DOMContentLoaded 후 축제 목록 초기 렌더링 */
 document.addEventListener("DOMContentLoaded", () => {
   const ul = document.querySelector(".festivalList .list");
   const festivals = getFestival();
-  const container = document.querySelector(".noteContent");
 
   renderFestivalList(ul, festivals);
 
-  // ✅ 쿼리에서 받아온 축제 ID가 있다면 선택 표시 + 렌더
   if (currentFestivalId) {
     const matchedItem = ul.querySelector(`[data-festival-id="${currentFestivalId}"]`);
     if (matchedItem) {
       matchedItem.classList.add("selected");
-      matchedItem.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      loadAndRenderNote(currentFestivalId); // ✨ 메모 불러오기
+      matchedItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      loadAndRenderNote(currentFestivalId);
     }
   }
 
-  // 리스트 클릭 시 ID 저장 + 메모 불러오기
+  // 리스트 클릭 시 ID 저장 + 메모 로딩
   ul.addEventListener("click", async (e) => {
     const li = e.target.closest(".festivalItem");
     if (!li) return;
@@ -80,16 +87,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (id) {
       currentFestivalId = id;
 
+      localStorage.setItem("lastSelectedFestivalId", id);
+
+
       ul.querySelectorAll(".festivalItem").forEach((item) =>
         item.classList.remove("selected")
       );
       li.classList.add("selected");
 
-      await loadAndRenderNote(currentFestivalId); // ✨ 마크다운 렌더링
+      await loadAndRenderNote(currentFestivalId);
     }
   });
 
-  // 노트 생성 버튼 클릭 → 모달 오픈
+  // 노트 생성 버튼
   const createNoteBtn = document.querySelector(".createNoteBtn");
   if (createNoteBtn) {
     createNoteBtn.addEventListener("click", () => {
@@ -97,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("먼저 축제를 선택해주세요!");
         return;
       }
-      openModal(currentFestivalId); // 모달 열기
+      openModal(currentFestivalId);
     });
   }
 });

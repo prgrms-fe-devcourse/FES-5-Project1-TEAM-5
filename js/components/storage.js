@@ -3,7 +3,19 @@ import { getFestival } from "../utils/getFestival.js";
 const { localStorage } = window;
 
 export function handleReview(festivalId, textField) {
-  textField.addEventListener("input", debounce(handleInput(festivalId), 300));
+  // ✅ 기존 input 이벤트 제거 (가능한 경우)
+  textField.removeEventListener("__input_handler__", textField.__debounced_handler__);
+
+  // ✅ 새 debounce 핸들러 정의
+  const handler = debounce(function (e) {
+    const value = this.value;
+    localStorage.setItem(`${festivalId}Review`, value);
+  }, 300);
+
+  textField.__debounced_handler__ = handler;
+
+  // ✅ input 핸들러 등록 (참조 이름으로 추적 가능)
+  textField.addEventListener("input", handler);
 }
 
 // input이  변경될때마다 로컬스토리지에 축제idreview에  저장
@@ -95,7 +107,7 @@ async function post(title, parent = { parent: null }) {
 
 export async function getReviews(id) {
   const idMap = JSON.parse(localStorage.getItem("festival-ID"));
-  const param = idMap[id];  // 동적으로 키 접근
+  const param = idMap[id]; // 동적으로 키 접근
   let response = await fetch(`${url}/${param}`, {
     headers: { "x-username": x_username },
   });
@@ -109,7 +121,7 @@ export async function getReviews(id) {
 
 export async function postReviews(festivalId) {
   let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-  let review = postMap[festivalId]
+  let review = postMap[festivalId];
   let content = localStorage.getItem(`${festivalId}Review`);
   let reviewObj = { title: festivalId, content };
   try {
@@ -156,7 +168,7 @@ export async function postReviews(festivalId) {
 export async function deleteReviews(festivalId) {
   try {
     let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-    let review = postMap[festivalId]
+    let review = postMap[festivalId];
     let reviewObj = { title: festivalId, content: "" };
     const response = await fetch(`${url}/${review}`, {
       method: "PUT",

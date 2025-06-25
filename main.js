@@ -17,15 +17,12 @@ import {
   setMapCenter,
 } from "./js/components/map.js";
 import { initFestivalData, setUUID } from "./js/components/storage.js";
+import { renderNav } from "./js/components/nav.js";
+
+renderNav();
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
-const toggle = $(".nav_btn");
-const nav = $(".nav");
-const gnb = $(".gnb");
-const stripes = $(".stripes");
-const links = $$(".nav a");
-const header = $("header");
 
 let markers = {};
 const map = initMap();
@@ -35,64 +32,6 @@ markers = addMarkers(map);
 
 initFestivalData();
 setUUID();
-
-const disabled = [
-  ...gnb.querySelectorAll(".disabled a"),
-  ...nav.querySelectorAll(".disabled a"),
-];
-
-disabled.forEach((button) => {
-  button.addEventListener("mousemove", (e) => {
-    const cursor = document.querySelector(".fake-cursor");
-    let firstMove = true;
-    document.addEventListener("mousemove", (e) => {
-      if (firstMove) {
-        gsap.set(cursor, {
-          x: e.clientX,
-          y: e.clientY,
-          opacity: 1,
-        });
-        firstMove = false;
-      } else {
-        // 이후부터는 부드럽게 따라다님
-        gsap.to(cursor, {
-          x: e.clientX,
-          y: e.clientY,
-          duration: 0.2,
-          ease: "power2.out",
-        });
-      }
-    });
-  });
-  button.addEventListener("mouseleave", (e) => {
-    const cursor = document.querySelector(".fake-cursor");
-    cursor.style.opacity = "0";
-    document.body.style.cursor = "auto";
-  });
-});
-
-function handelToggle() {
-  nav.classList.toggle("visible");
-  toggle.classList.toggle("visible");
-  stripes.classList.toggle("visible");
-  gnb.classList.toggle("hidden");
-  const cursor = document.querySelector(".fake-cursor");
-  cursor.style.opacity = "0";
-  document.body.style.cursor = "auto";
-}
-toggle.addEventListener("click", handelToggle);
-function handelHamburger(e) {
-  if (e.target.closest(".nav a")) {
-    nav.classList.remove("visible");
-    toggle.classList.remove("visible");
-    stripes.classList.remove("visible");
-    gnb.classList.remove("hidden");
-    const cursor = document.querySelector(".fake-cursor");
-    cursor.style.opacity = "0";
-    document.body.style.cursor = "auto";
-  }
-}
-document.addEventListener("click", handelHamburger);
 
 const controllerBtn = $(".video_controller a");
 const video = $(".main_video");
@@ -119,20 +58,6 @@ function handleVideo() {
   }
 }
 controllerBtn.addEventListener("click", handleVideo);
-
-function handleScroll() {
-  const scrollY = window.scrollY || window.pageYOffset;
-  if (scrollY > 800) {
-    gnb.classList.add("dark");
-    toggle.classList.add("dark");
-    header.classList.add("no-before");
-  } else {
-    gnb.classList.remove("dark");
-    toggle.classList.remove("dark");
-    header.classList.remove("no-before");
-  }
-}
-window.addEventListener("scroll", handleScroll);
 
 const split = new SplitText(".main_visual01 h2", { type: "chars" });
 gsap.from(split.chars, {
@@ -229,3 +154,19 @@ function showFestivalInfoBySearch(e) {
 }
 
 uhaUl.addEventListener("click", showFestivalInfoBySearch);
+
+window.addEventListener("load", () => {
+  const hash = window.location.hash;
+
+  if (hash === "#main_search") {
+    setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        console.log("[main_search] 스크롤 이동 완료");
+      } else {
+        console.warn("[main_search] 해당 요소가 없습니다");
+      }
+    }, 200);
+  }
+});

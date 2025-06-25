@@ -1,4 +1,6 @@
 import { handleReview, postReviews } from "./storage.js";
+import { renderNav } from "./nav.js";
+renderNav();
 
 const imageMap = new Map(); // Base64를 저장할 Map
 
@@ -87,7 +89,7 @@ const modalTemplate = `
         <div id="third" class="modal_inner">
           <h1 class="modal_title">
             Festory Commuinty
-            <button id="x_btn" type="button"><img src="./assets/images/close_icon.svg" alt="close" /></button>
+            <button id="x_btn" type="button"><img src="../assets/images/close_icon.svg" alt="close" /></button>
           </h1>
           <div class="markdown_wrap">
             <textarea id="markdown_input" class="markdown_input_area" placeholder="여기에 마크다운 텍스트를 입력하세요..." rows="10"></textarea>
@@ -236,6 +238,7 @@ function closeModal() {
       if (currentModalElement) {
         currentModalElement.remove();
         currentModalElement = null;
+        currentFestivalId = null; // ✅ 추가
          document.body.style.overflow = '';
       }
     });
@@ -251,6 +254,7 @@ function saveSomething() {
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
   postReviews(currentFestivalId) // 서버로 저장.
   closeModal();
+  window.location.reload();
 }
 
 // DOM이 완전히 로드된 후 이벤트 연결

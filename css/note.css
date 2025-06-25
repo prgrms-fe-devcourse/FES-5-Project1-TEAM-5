@@ -23,7 +23,7 @@
   height: 100vh;
   .modal_overlay {
     position: fixed;
-    z-index: 1000;
+    z-index: 9999;
     left: 0;
     top: 0;
     height: 100%;
@@ -180,7 +180,7 @@
   min-height: 32vh;
   overflow-wrap: break-word;
 }
-.modal_description_display {
+.modal_description_display, .noteContent {
   h1 {
     font-size: 2rem; 
     font-weight: bold;
@@ -228,20 +228,20 @@
     margin-bottom: 0.2rem;
   }
 }
-.modal_description_display ol,
-.modal_description_display ul {
+.modal_description_display ol, .noteContent ol,
+.modal_description_display ul, .noteContent ul {
   margin-left: 20px; 
   margin-bottom: 1rem;
   padding: 0; 
 }
-.modal_description_display li {
+.modal_description_display li, .noteContent li {
   margin-bottom: 5px; 
   color: #555; 
 }
-.modal_description_display ul li {
+.modal_description_display ul li, .noteContent ul li {
   list-style: disc;
 }
-.modal_description_display blockquote {
+.modal_description_display blockquote, .noteContent blockquote {
   border-left: 4px solid #ccc; 
   padding-left: 15px; 
   margin: 15px 0;
@@ -251,36 +251,36 @@
   padding: 10px 15px;
   border-radius: 5px;
 }
-.modal_description_display blockquote p {
+.modal_description_display blockquote p, .noteContent blockquote p {
   margin: 0; 
 }
-.modal_description_display details {
+.modal_description_display details, .noteContent details{
   margin: 15px 0;
   border: 1px solid #eee;
   border-radius: 5px;
   padding: 10px;
   background-color: #fcfcfc;
 }
-.modal_description_display summary {
+.modal_description_display summary, .noteContent summary{
   font-weight: bold;
   cursor: pointer;
   color: #333;
   padding: 5px 0;
   outline: none; 
 }
-.modal_description_display strong {
+.modal_description_display strong, .noteContent strong{
   color: #333;
   font-weight: bold;
 }
-.modal_description_display em {
+.modal_description_display em, .noteContent em{
   color: #555;
   font-style: italic;
 }
-.modal_description_display a {
+.modal_description_display a, .noteContent a {
   color: #007bff;
   text-decoration: underline;
 }
-.modal_description_display code {
+.modal_description_display code, .noteContent code {
   background-color: #f0f0f0;
   padding: 2px 4px; 
   border-radius: 3px; 
@@ -288,7 +288,7 @@
   font-size: 0.9em; 
   color: #c7254e; 
 }
-.modal_description_display pre {
+.modal_description_display pre, .noteContent pre {
   background-color: #2d2d2d; 
   color: #f8f8f2; 
   padding: 15px; 
@@ -296,7 +296,7 @@
   overflow-x: auto;
   margin: 15px 0;
 }
-.modal_description_display pre code {
+.modal_description_display pre code, .noteContent pre code{
   background-color: transparent;
   padding: 0; 
   border-radius: 0; 
@@ -305,7 +305,7 @@
   color: inherit; 
   display: block; 
 }
-.modal_description_display img {
+.modal_description_display img, .noteContent img {
   max-width: 100%; 
   width: 200px;
   height: auto;
