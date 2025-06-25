@@ -1,6 +1,8 @@
+import { handleReview, postReviews } from "./storage.js";
+
 const imageMap = new Map(); // Base64를 저장할 Map
 
-function convertSimpleMarkdownToHtml(markdownText) {
+export function convertSimpleMarkdownToHtml(markdownText) {
   let html = markdownText;
 
   // 인용문 (>) 처리
@@ -85,7 +87,7 @@ const modalTemplate = `
         <div id="third" class="modal_inner">
           <h1 class="modal_title">
             Festory Commuinty
-            <button id="x_btn" type="button"><img src="./assets/images/close_icon.svg" alt="close" /></button>
+            <button id="x_btn" type="button"><img src="../assets/images/close_icon.svg" alt="close" /></button>
           </h1>
           <div class="markdown_wrap">
             <textarea id="markdown_input" class="markdown_input_area" placeholder="여기에 마크다운 텍스트를 입력하세요..." rows="10"></textarea>
@@ -187,20 +189,20 @@ function initializeModalEvents(modalEl) {
 
 let currentFestivalId = null; // 현재 작성 중인 축제 ID 저장용
 // 팝업창 열기 함수
-export function openModal(festivalId) {
-  currentFestivalId = festivalId; // 외부에서 받은 ID 저장
+export function openModal(festivalId, existingMarkdown = "") {
+  currentFestivalId = festivalId;
 
   document.body.insertAdjacentHTML('beforeend', modalTemplate);
   currentModalElement = document.querySelector('.modal_container');
 
   if (!currentModalElement) {
-      console.error("새로 삽입된 모달 요소를 찾지 못했습니다.");
-      return;
+    console.error("새로 삽입된 모달 요소를 찾지 못했습니다.");
+    return;
   }
 
   initializeModalEvents(currentModalElement);
 
-  modalAnimation = gsap.timeline({ defaults: { ease: "power2.inOut" }})
+  modalAnimation = gsap.timeline({ defaults: { ease: "power2.inOut" } })
     .set(currentModalElement.querySelector('#note_modal'), { display: "flex", visibility: "visible", opacity: 0, scaleY: 0.01, transformOrigin: "center center" })
     .set(currentModalElement.querySelector('#fourth'), { opacity: 0, scaleY: 0, transformOrigin: "center center" })
     .set(currentModalElement.querySelector('#second'), { opacity: 0, scaleY: 0, transformOrigin: "center center" })
@@ -210,15 +212,21 @@ export function openModal(festivalId) {
     .to(currentModalElement.querySelector('#second'), { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
     .to(currentModalElement.querySelector('#third'), { opacity: 1, scaleY: 1, duration: 0.4 }, "-=0.2")
     .to(currentModalElement.querySelector('#fourth'), { background: "rgba(135,25,795,0.5)", border: "1px solid rgba(0,0,0,0.1)", duration: 0.8 }, "-=0.4");
-      document.body.style.overflow = 'hidden';
 
+  document.body.style.overflow = 'hidden';
+
+  // 🎯 이 부분만 수정됨!
   const markdownInput = currentModalElement.querySelector('#markdown_input');
   const markdownDisplay = currentModalElement.querySelector('.modal_description_display');
   if (markdownInput && markdownDisplay) {
-    markdownInput.value = ''; // 입력 필드 비우기
-    markdownDisplay.innerHTML = ''; // 미리보기 영역 비우기
-    markdownInput.focus(); // 입력 필드에 포커스 주기
+    markdownInput.value = existingMarkdown;
+    markdownDisplay.innerHTML = convertSimpleMarkdownToHtml(existingMarkdown);
+    markdownInput.focus();
   }
+
+  const node = document.querySelector('.markdown_input_area');
+  localStorage.setItem(`${currentFestivalId}Review`, markdownInput.value);
+  handleReview(currentFestivalId, node);
 }
 
 // 팝업창 닫기 함수
@@ -241,7 +249,7 @@ function saveSomething() {
   const markdownTextToSave = markdownInput ? markdownInput.value : '';
   console.log("저장할 축제 ID:", currentFestivalId);
   console.log("저장할 마크다운 텍스트:", markdownTextToSave);
-  // 실제 저장 로직 (서버로 전송 등)
+  postReviews(currentFestivalId) // 서버로 저장.
   closeModal();
 }
 
