@@ -34,30 +34,32 @@
 
 ---
 
-## 주요 기능
+## 💡 주요 기능
 - 전 세계 축제 검색
 - 지역별, 날짜별 필터링
 - 축제 위치에 따른 지도 마킹
 - 클릭시 축제에 대한 소개
+- 축제별 마크다운 플래너/메모 작성기능
 
 ---
 
-## 사용 방법
+## 🗒️ 사용 방법
 1. 스크롤을 따라 메인 검색 화면까지 이동하세요.
 2. 메인 화면에서 축제를 검색하세요.
 3. 지도에서 축제 위치를 확인하세요.
 4. 원하는 축제를 선택해 일정과 상세 정보를 확인하세요.
+5. Travel Course를 통해 가고싶은 축제에 대한 짧은 메모, 여행 계획 등을 세워보세요.
 
 
 ---
 
 ## 👩‍👩‍👧‍👧 참여 팀원
 
-- **효영공주(?)** : 데이터 생성 및 데이터 호출 함수 제작 / 축제 Info 카드 제작
-- **수진공주** : 지도 UI 제작
-- **유하공주** : 축제 정보 리스트 제작
-- **은정공주** : 페이지 레이아웃 제작 / UI/UX 플로우 설계
-- **은빈공주** : 축제 필터링 제작
+- **효영공주(?)** : 데이터 호출 함수 / 축제 Info 카드 / Travel Course
+- **수진공주** : 지도 UI 제작 / 로컬스토리지 기능구현 / API연동 : 데이터 저장 및 수정, 삭제 구현
+- **유하공주** : 축제 정보 리스트 제작 / 와이어 프레임 및 PPT 제작 
+- **은정공주** : 페이지 레이아웃 제작 / UI/UX 플로우 설계 / 마크다운 기능 구현
+- **은빈공주** : 축제 필터링 제작 / 기획서 제작
 
 ---
 
@@ -75,6 +77,8 @@
 📦 프로젝트 루트/
 ├── 📁 assets/              # 이미지, 영상 등 정적 리소스
 │   └── ...
+├── 📁 html/
+│   └── co
 ├── 📁 css/                 # CSS 파일
 │   ├── reset.css
 │   └── style.css
@@ -138,6 +142,25 @@
 
 7. `드롭다운 필터 UI`: 테마나 국가 선택 시 드롭다운이 자연스럽게 열리고 닫히는 인터랙션 구성으로 사용자 흐름 방해 없이 정보 탐색 가능.
 
+## ✅ TRAVEL COURSE 페이지 기능 및 UI
+
+- **기능**: `축제별 마크다운 플래너 작성 기능`, `메모 수정/삭제 기능`, `작성중인 메모 저장기능`,  `서버연동을 통한 데이터관리`, `마우스 인터랙션`,`애니메이션 처리`
+- **기술 포인트**:
+1. 축제 선택 기반 코스 기획
+	- 사용자는 축제 리스트에서 원하는 축제를 선택할 수 있음
+	- 선택된 축제 리스트를 바탕으로 여행 코스를 기획함
+
+2. 마크다운 메모 작성
+	- Travel Course 메뉴를 클릭하거나 "계획하러 가기" 버튼을 누르면 모달 팝업이 열림
+	- 모달에서는 마크다운 문법을 사용해 자유롭게 메모를 작성할 수 있음
+	- 실시간 미리보기 기능을 통해 작성 내용을 바로 확인할 수 있음
+
+3. 데이터 저장 및 상태 유지
+	- 작성한 메모는 로컬스토리지와 서버 API를 통해 저장
+	- 입력 중에 저장하지 않고 팝업창을 닫아도 임시 저장된 내용이 남아 있어, 다시 열었을 때 이어서 작성할 수 있음
+
+4. 선택된 축제 없을 시 자동 포커스
+	- 만약 선택된 축제 리스트가 없다면, 가장 처음의 축제 리스트에 자동으로 포커싱이 이동
 
 **스크린샷**:
 
@@ -146,7 +169,9 @@
 <img src="./assets/images/screen08.png" alt="screen" width="900" />
 <img src="./assets/images/screen09.png" alt="screen" width="900" />
 <img src="./assets/images/screen10.png" alt="screen" width="900" />
----
+<img src="./assets/images/screen11.png" alt="screen" width="900" />
+<img src="./assets/images/screen12.png" alt="screen" width="900" />
+<img src="./assets/images/screen13.png" alt="screen" width="900" />
 
 
 
@@ -166,4 +191,12 @@ npm run dev
 # index.html 파일을 브라우저로 열면 실행됩니다.
 
 
-정은빈
+---
+
+## 🔧 기획 자료
+
+- 기획서 : https://www.figma.com/proto/Ftpz763sQBmyPdlZUSQrfD/1%EC%B0%A8-%ED%94%84%EB%A1%9C%EC[…]25&t=idN3eJJfgKdQMrCq-1&scaling=min-zoom&content-scaling=fixed
+
+- Wire Frame : https://www.figma.com/design/zaeGb8RnM3VZvxpH1XR9zy/5%ED%8C%80-Festory-%EC%99%80%EC%9D%B4%EC%96%B4-%ED%94%84%EB%A0%88%EC%9E%84?node-id=1-427&t=QeLGi9Kn9DMH4atM-1
+
+- PPT : https://docs.google.com/presentation/d/1JKYCwfDmTad3NagyCBw7IJUSjCiovVX84UIFAZdWa3g/edit?usp=sharing
