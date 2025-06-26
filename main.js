@@ -27,6 +27,11 @@ const $$ = document.querySelectorAll.bind(document);
 let markers = {};
 const map = initMap();
 
+if (!localStorage.getItem("initCleared")) {
+  localStorage.removeItem("festival-ID");
+  localStorage.setItem("initCleared", true);
+}
+
 setMapCenter(map);
 markers = addMarkers(map);
 
