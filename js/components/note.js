@@ -347,3 +347,10 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("이미지 첨부 요소를 찾을 수 없습니다.");
   }
 });
+
+// ESC 키로 팝업 닫기
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && currentModalElement) {
+    closeModal();
+  }
+});
