@@ -30,7 +30,7 @@ const map = initMap();
 setMapCenter(map);
 markers = addMarkers(map);
 
-initFestivalData();
+await initFestivalData();
 setUUID();
 
 const controllerBtn = $(".video_controller a");

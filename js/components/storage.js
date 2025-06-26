@@ -68,23 +68,26 @@ export function setUUID() {
 // ---------프로그래머스 API ---------------
 
 const url = "https://kdt-api.fe.dev-cos.com/documents";
-const x_username = "FES5-Project1-5-Team";
+const x_username = "FES5-Project1-5-Test2";
 const festivalsID = {};
 
 export async function initFestivalData() {
-  if (!localStorage.getItem("festival-ID")) {
-    const festivals = getFestival();
-    const results = await Promise.all(
-      festivals.map(async (festival) => {
-        const result = await post(festival["id"]);
-        return { id: festival["id"], data: result };
-      })
-    );
-    results.forEach(({ id, data }) => {
-      festivalsID[id] = data;
-    });
-    localStorage.setItem("festival-ID", JSON.stringify(festivalsID));
+  const saved = localStorage.getItem("festival-ID");
+  if (saved) return; // 이미 저장돼 있으면 아무 것도 안 함
+
+  const festivals = getFestival();
+  const idMap = {};
+
+  for (const festival of festivals) {
+    try {
+      const createdId = await post(festival.id); // POST 요청으로 ID 받기
+      idMap[festival.id] = createdId;
+    } catch (err) {
+      console.error(`등록 실패`, err);
+    }
   }
+
+  localStorage.setItem("festival-ID", JSON.stringify(idMap));
 }
 
 async function post(title, parent = { parent: null }) {
@@ -99,6 +102,8 @@ async function post(title, parent = { parent: null }) {
     });
     if (!response.ok) throw new Error(`http error : ${response.status}`);
     else {
+      console.log("post함수 실행됐고 성공함 -> id반환");
+
       localStorage.removeItem(`${title}Review`);
       const data = await response.json();
       return data.id;
@@ -108,36 +113,74 @@ async function post(title, parent = { parent: null }) {
   }
 }
 
-export async function getReviews(id) {
+export async function getReviews(id, getID = false) {
   const idMap = JSON.parse(localStorage.getItem("festival-ID"));
-  const param = idMap[id]; // 동적으로 키 접근
-  let response = await fetch(`${url}/${param}`, {
-    headers: { "x-username": x_username },
-  });
-  if (response.ok) {
-    const data = await response.json();
-    return data.content;
-  } else {
-    console.error("error : " + response.status);
+  const param = idMap[id];
+  try {
+    let response = await fetch(`${url}/${param}`, {
+      headers: { "x-username": x_username },
+    });
+    if (response.ok) {
+      console.log("getReviews 실행됐고 성공함 ");
+
+      const data = await response.json();
+      const reviews = data.documents;
+      const userUUID = localStorage.getItem("uuid");
+      for (let review of reviews) {
+        if (review.title === userUUID) {
+          let response = await fetch(`${url}/${review.id}`, {
+            headers: { "x-username": x_username },
+          });
+          if (response.ok) {
+            console.log("getReviews > 데이터있고 성공함");
+            const data = await response.json();
+            console.log(getID);
+            if (getID === false) {
+              return data.content;
+            } else {
+              return { id: data.id, content: data.content };
+            }
+          } else {
+            throw new Error("get error : ", error);
+          }
+        }
+      }
+      return;
+    } else {
+      throw new Error("get festival error : ", error);
+    }
+  } catch (error) {
+    console.error("error : ", error);
   }
 }
 
 export async function postReviews(festivalId) {
   let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-  let review = postMap[festivalId];
+  let festival = postMap[festivalId];
+  const userUUID = localStorage.getItem("uuid");
   let content = localStorage.getItem(`${festivalId}Review`);
-  let reviewObj = { title: festivalId, content };
+  let reviewObjContent = { title: userUUID, content };
   try {
-    const response = await fetch(`${url}/${review}`, {
+    let reviewExist = await getReviews(festivalId, true);
+    let responsePOST = reviewExist?.id;
+    if (!reviewExist) responsePOST = await post(userUUID, { parent: festival });
+    const response = await fetch(`${url}/${responsePOST}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-username": x_username,
       },
-      body: JSON.stringify(reviewObj),
+      body: JSON.stringify(reviewObjContent),
     });
     if (!response.ok) throw new Error(`http error : ${response.status}`);
     else {
+      console.log(
+        "postReview 실행됐고 성공함 ",
+        festival,
+        content,
+        responsePOST
+      );
+
       localStorage.removeItem(`${festivalId}Review`);
     }
   } catch (error) {
@@ -171,17 +214,15 @@ export async function postReviews(festivalId) {
 export async function deleteReviews(festivalId) {
   try {
     let postMap = JSON.parse(localStorage.getItem("festival-ID"));
-    let review = postMap[festivalId];
-    let reviewObj = { title: festivalId, content: "" };
-    const response = await fetch(`${url}/${review}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "x-username": x_username,
-      },
-      body: JSON.stringify(reviewObj),
+    let festival = postMap[festivalId];
+    const response = await getReviews(festivalId, true);
+
+    const responseDelete = await fetch(`${url}/${response.id}`, {
+      method: "DELETE",
+      headers: { "x-username": x_username },
     });
-    if (!response.ok) throw new Error(`Delete failed ${response.status}`);
+    if (!responseDelete.ok)
+      throw new Error(`Delete failed ${responseDelete.status}`);
     else localStorage.removeItem(`${festivalId}Review`);
   } catch (error) {
     console.error("Delete error : ", error);
