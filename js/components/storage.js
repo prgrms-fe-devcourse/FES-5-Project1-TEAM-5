@@ -40,8 +40,6 @@ function debounce(f, limit = 1000) {
   };
 }
 
-// 해당축제의 리뷰 가져와서 텍스트필드에 띄워주기
-// 여기서 바로 마크다운이 적용되는지는 모르겠음 -> 안되면 되게하기 ...
 export function initTextField(id) {
   const value = localStorage.getItem(`${id}Review`);
   if (value) textField.value = value;
@@ -68,28 +66,42 @@ export function setUUID() {
 // ---------프로그래머스 API ---------------
 
 const url = "https://kdt-api.fe.dev-cos.com/documents";
-const x_username = "FES5-Project1-5-Test2";
+const x_username = "FES5-Project1-5Team_final";
 const festivalsID = {};
 
 export async function initFestivalData() {
   const saved = localStorage.getItem("festival-ID");
   if (saved) return; // 이미 저장돼 있으면 아무 것도 안 함
 
-  const festivals = getFestival();
   const idMap = {};
 
-  for (const festival of festivals) {
-    try {
-      const createdId = await post(festival.id); // POST 요청으로 ID 받기
-      idMap[festival.id] = createdId;
-    } catch (err) {
-      console.error(`등록 실패`, err);
+  try {
+    const response = await fetch(`${url}`, {
+      headers: { "x-username": x_username },
+    });
+    if (!response.ok) throw new Error("서버에서 데이터 가져오기 실패");
+
+    const data = await response.json();
+
+    for (const item of data) {
+      if (item.title && item.id) {
+        idMap[item.title] = item.id;
+      }
     }
+
+    const allFestivals = getFestival();
+    for (const festival of allFestivals) {
+      const festivalId = festival.id;
+      if (!idMap[festivalId]) {
+        const newId = await post(festivalId);
+        idMap[festivalId] = newId;
+      }
+    }
+    localStorage.setItem("festival-ID", JSON.stringify(idMap));
+  } catch (err) {
+    console.error("initFestivalData 오류:", err);
   }
-
-  localStorage.setItem("festival-ID", JSON.stringify(idMap));
 }
-
 async function post(title, parent = { parent: null }) {
   try {
     const response = await fetch(`${url}`, {
@@ -102,8 +114,6 @@ async function post(title, parent = { parent: null }) {
     });
     if (!response.ok) throw new Error(`http error : ${response.status}`);
     else {
-      console.log("post함수 실행됐고 성공함 -> id반환");
-
       localStorage.removeItem(`${title}Review`);
       const data = await response.json();
       return data.id;
@@ -121,8 +131,6 @@ export async function getReviews(id, getID = false) {
       headers: { "x-username": x_username },
     });
     if (response.ok) {
-      console.log("getReviews 실행됐고 성공함 ");
-
       const data = await response.json();
       const reviews = data.documents;
       const userUUID = localStorage.getItem("uuid");
@@ -132,9 +140,7 @@ export async function getReviews(id, getID = false) {
             headers: { "x-username": x_username },
           });
           if (response.ok) {
-            console.log("getReviews > 데이터있고 성공함");
             const data = await response.json();
-            console.log(getID);
             if (getID === false) {
               return data.content;
             } else {
@@ -174,13 +180,6 @@ export async function postReviews(festivalId) {
     });
     if (!response.ok) throw new Error(`http error : ${response.status}`);
     else {
-      console.log(
-        "postReview 실행됐고 성공함 ",
-        festival,
-        content,
-        responsePOST
-      );
-
       localStorage.removeItem(`${festivalId}Review`);
     }
   } catch (error) {
