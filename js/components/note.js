@@ -325,7 +325,7 @@ function closeModal() {
 }
 
 // 저장 함수
-function saveSomething() {
+async function saveSomething() {
   // console.log("Save clicked!");
   const markdownInput = currentModalElement
     ? currentModalElement.querySelector("#markdown_input")
@@ -333,7 +333,7 @@ function saveSomething() {
   const markdownTextToSave = markdownInput ? markdownInput.value : "";
   // console.log("저장할 축제 ID:", currentFestivalId);
   // console.log("저장할 마크다운 텍스트:", markdownTextToSave);
-  postReviews(currentFestivalId); // 서버로 저장.
+  await postReviews(currentFestivalId); // 서버로 저장.
   closeModal();
   window.location.reload();
 }
